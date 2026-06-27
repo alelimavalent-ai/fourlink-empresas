@@ -86,3 +86,29 @@ O sitemap.xml e gerado automaticamente pelo endpoint src/pages/sitemap.xml.ts
 - Build de producao: npm run build -> gera dist/ sem erros.
 - A pasta dist/ NAO vai para o Git (esta no .gitignore); o Cloudflare a gera no servidor.
 - Node 18+ (recomendado 20, fixado em .nvmrc).
+
+---
+
+## 📦 Publicar SEM GitHub (upload manual da pasta dist)
+
+Se você não vai usar o GitHub agora, publique por upload direto:
+
+1. **Gerar a pasta dist** (na sua máquina):
+   - Dê 2 cliques em **build.bat** (ele instala as dependências se for a 1ª vez e gera a pasta `dist/`).
+   - Ou pelo terminal:
+     ```
+     npm install
+     npm run build
+     ```
+2. **Subir no Cloudflare Pages:**
+   - Cloudflare → **Workers & Pages → Create → Pages → Upload assets**.
+   - Nome do projeto: `fourlink-empresas`.
+   - **Arraste a pasta `dist/`** para a área de upload.
+   - Clique em **Deploy**.
+3. **Domínio:** em **Custom domains**, aponte `fourlinkempresas.com`.
+
+> Para atualizar depois: rode **build.bat** de novo e suba a nova pasta `dist/`
+> (ou conecte ao GitHub para virar automático).
+
+A meta tag de verificação do Google Search Console já está incluída no `<head>`
+(`src/layouts/BaseLayout.astro`) e aparecerá em todas as páginas após o build.

@@ -1,0 +1,197 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ServiceIcon from '@/components/ServiceIcon.astro';
+import FaqList from '@/components/FaqList.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import Planos from '@/components/Planos.astro';
+import CalculadoraSecao from '@/components/CalculadoraSecao.astro';
+import { getCollection } from 'astro:content';
+import { serviceSchema, faqSchema } from '@/lib/schema';
+import { SERVICES, whatsappUrl } from '@/config/site';
+
+export async function getStaticPaths() {
+  const servicos = await getCollection('servicos');
+  return servicos.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await entry.render();
+const path = `/servicos/${entry.slug}`;
+const icon = SERVICES.find((s) => s.slug === entry.slug)?.icon ?? 'chip';
+const comCalculadora = ['chips-corporativos', 'internet-fibra-empresarial', 'portabilidade-empresarial'].includes(entry.slug);
+
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Serviços', href: '/servicos' },
+  { name: data.title, href: path },
+];
+const schemas = [
+  serviceSchema({ name: data.title, description: data.description, path }),
+  faqSchema(data.faqs),
+].filter(Boolean) as object[];
+---
+
+<BaseLayout
+  title={data.seoTitle ?? data.title}
+  description={data.description}
+  path={path}
+  breadcrumbs={breadcrumbs}
+  schemas={schemas}
+>
+  <article>
+    <header class="svc-hero">
+      <div class="container">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/">Início</a><span>/</span><a href="/servicos">Serviços</a><span>/</span><b>{data.title}</b>
+        </nav>
+        <span class="svc-hero-ic"><ServiceIcon name={icon} size={30} /></span>
+        <h1>{data.title}</h1>
+        <p class="answer">{data.answer}</p>
+        <a href={whatsappUrl(`Quero tirar dúvidas sobre ${data.title}.`)} class="btn btn-primary svc-hero-cta" target="_blank" rel="noopener">Tirar dúvidas com a Alessandra</a>
+      </div>
+    </header>
+
+    {data.benefits.length > 0 && (
+      <section class="benefits">
+        <div class="container">
+          <ul>
+            {data.benefits.map((b) => (
+              <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12l4 4 10-11"/></svg>
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    <section class="prose-sec">
+      <div class="container prose">
+        <Content />
+      </div>
+    </section>
+
+    {data.plans && <Planos tipo={data.plans} />}
+
+    <FaqList faqs={data.faqs} title={`Dúvidas sobre ${data.title}`} />
+  </article>
+
+  {comCalculadora && <CalculadoraSecao heading={`Veja quanto a sua empresa pode economizar com ${data.title.toLowerCase()}`} />}
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .svc-hero {
+    background: var(--grad-soft);
+    color: #fff;
+    padding-block: clamp(2.5rem, 7vw, 4.5rem) clamp(2.5rem, 6vw, 4rem);
+  }
+  .crumbs {
+    font-size: 0.82rem;
+    color: #9fb0d2;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1.6rem;
+    flex-wrap: wrap;
+  }
+  .crumbs a:hover {
+    color: #fff;
+  }
+  .crumbs b {
+    color: #fff;
+    font-weight: 500;
+  }
+  .svc-hero-ic {
+    display: inline-flex;
+    padding: 0.8rem;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--pink-soft);
+    margin-bottom: 1rem;
+  }
+  .svc-hero h1 {
+    color: #fff;
+    font-size: var(--step-3);
+    max-width: 18ch;
+  }
+  .answer {
+    margin-top: 1.1rem;
+    font-size: var(--step-1);
+    color: #c6d1ea;
+    max-width: 62ch;
+    line-height: 1.55;
+  }
+  .svc-hero-cta { margin-top: 1.6rem; }
+  .benefits {
+    background: var(--mist);
+    padding-block: 2.4rem;
+  }
+  .benefits ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem 2rem;
+  }
+  .benefits li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    color: var(--ink);
+  }
+  .benefits svg {
+    color: var(--pink);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .prose-sec {
+    padding-block: clamp(3rem, 7vw, 5rem);
+  }
+  .prose {
+    max-width: 760px;
+  }
+  .prose :global(h2) {
+    font-size: var(--step-2);
+    margin: 2.2rem 0 0.9rem;
+  }
+  .prose :global(h3) {
+    font-size: var(--step-1);
+    margin: 1.6rem 0 0.6rem;
+    color: var(--navy);
+  }
+  .prose :global(p) {
+    margin-bottom: 1.1rem;
+    color: #2c3650;
+  }
+  .prose :global(ol),
+  .prose :global(ul) {
+    margin: 0 0 1.2rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .prose :global(ol) {
+    list-style: decimal;
+  }
+  .prose :global(ul) {
+    list-style: disc;
+  }
+  .prose :global(li) {
+    color: #2c3650;
+  }
+  .prose :global(a) {
+    color: var(--pink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .prose :global(blockquote) {
+    border-left: 3px solid var(--pink);
+    padding: 0.4rem 0 0.4rem 1.2rem;
+    margin: 1.6rem 0;
+    color: var(--navy);
+    font-size: 1.08rem;
+  }
+</style>

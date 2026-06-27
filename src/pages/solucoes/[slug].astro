@@ -1,0 +1,165 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import FaqList from '@/components/FaqList.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import CalculadoraSecao from '@/components/CalculadoraSecao.astro';
+import ServiceIcon from '@/components/ServiceIcon.astro';
+import { getCollection } from 'astro:content';
+import { serviceSchema, faqSchema } from '@/lib/schema';
+import { SERVICES, whatsappUrl, FOUNDER } from '@/config/site';
+
+export async function getStaticPaths() {
+  const segmentos = await getCollection('segmentos');
+  return segmentos.map((entry) => ({ params: { slug: entry.data.customSlug }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await entry.render();
+const path = `/solucoes/${data.customSlug}`;
+const wa = whatsappUrl(`Tenho uma empresa do segmento ${data.segmento} e quero entender como reduzir os custos de telefonia.`);
+const related = data.servicosRelacionados
+  .map((slug) => SERVICES.find((s) => s.slug === slug))
+  .filter(Boolean);
+
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Soluções', href: '/solucoes' },
+  { name: data.segmento, href: path },
+];
+const schemas = [
+  serviceSchema({ name: `Telefonia corporativa para ${data.segmento}`, description: data.description, path }),
+  faqSchema(data.faqs),
+].filter(Boolean) as object[];
+---
+
+<BaseLayout
+  title={data.seoTitle ?? `Telefonia corporativa para ${data.segmento} | Fourlink Empresas`}
+  description={data.description}
+  path={path}
+  breadcrumbs={breadcrumbs}
+  schemas={schemas}
+>
+  <header class="seg-hero">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Início</a><span>/</span><a href="/solucoes">Soluções</a><span>/</span><b>{data.segmento}</b>
+      </nav>
+      <span class="seg-ic"><ServiceIcon name={data.icon} size={30} /></span>
+      <h1>Telefonia corporativa e internet para {data.segmento}</h1>
+      <p class="intro">{data.intro}</p>
+      <p class="rtime mono">⏱ {data.readingMinutes} min de leitura</p>
+      <div class="hero-cta">
+        <a href={wa} class="btn btn-primary" target="_blank" rel="noopener">Falar com a Alessandra</a>
+        <a href="/calculadora-de-economia" class="btn btn-ghost-d">Calcular economia</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="seg-pains">
+    <div class="container">
+      <h2 class="mh">Desafios de telecom em {data.segmento.toLowerCase()}</h2>
+      <ul class="pains-grid">
+        {data.dores.map((d) => (
+          <li>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+            <span>{d}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="prose-sec">
+    <div class="container prose">
+      <h2>Como a Fourlink ajuda {data.segmento.toLowerCase()}</h2>
+      <p class="lead-p">{data.comoAjudamos}</p>
+      <figure class="seg-photo">
+        <img
+          src="/img/salao-atendimento-1080.webp"
+          srcset="/img/salao-atendimento-720.webp 720w, /img/salao-atendimento-1080.webp 1080w"
+          sizes="(max-width: 800px) 100vw, 760px"
+          width="1080" height="608"
+          alt="Equipe de atendimento da Fourlink Empresas no Rio de Janeiro"
+          loading="lazy" decoding="async"
+        />
+        <figcaption>Atendimento Fourlink — equipe real, no Rio de Janeiro, pronta para analisar a sua conta.</figcaption>
+      </figure>
+      <Content />
+      <aside class="authority">
+        <span class="auth-ic"><ServiceIcon name="consult" size={22} /></span>
+        <p>
+          Conteúdo com a autoridade de <strong>{FOUNDER.name}</strong> — CEO Fundador da Fourlink Empresas e
+          especialista corporativo em telecomunicações há mais de {FOUNDER.experienceYears} anos.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="seg-svc">
+      <div class="container">
+        <h2 class="mh">Serviços recomendados para {data.segmento.toLowerCase()}</h2>
+        <ul class="seg-svc-grid">
+          {related.map((s) => (
+            <li>
+              <a href={`/servicos/${s!.slug}`}>
+                <span class="ssic"><ServiceIcon name={s!.icon} size={22} /></span>
+                <strong>{s!.title}</strong>
+                <span class="ssgo">Ver serviço →</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <FaqList faqs={data.faqs} title={`Dúvidas — telefonia para ${data.segmento.toLowerCase()}`} />
+
+  <CalculadoraSecao heading={`Quanto a sua empresa de ${data.segmento.toLowerCase()} pode economizar?`} />
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .seg-hero { background: var(--grad-soft); color: #fff; padding-block: clamp(2.5rem, 7vw, 4.5rem); }
+  .crumbs { font-size: 0.8rem; color: #9fb0d2; display: flex; gap: 0.45rem; align-items: center; margin-bottom: 1.4rem; flex-wrap: wrap; }
+  .crumbs a:hover { color: #fff; } .crumbs b { color: #fff; font-weight: 500; }
+  .seg-ic { display: inline-grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); color: var(--copper-soft); margin-bottom: 1rem; }
+  .seg-hero h1 { color: #fff; font-size: var(--step-3); margin: 0.2rem 0 1rem; max-width: 24ch; }
+  .intro { color: #c6d1ea; max-width: 64ch; font-size: var(--step-1); line-height: 1.55; }
+  .rtime { color: var(--copper-soft); font-size: 0.8rem; margin-top: 1rem; }
+  .hero-cta { margin-top: 1.6rem; display: flex; flex-wrap: wrap; gap: 0.8rem; }
+  .btn-ghost-d { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+  .btn-ghost-d:hover { border-color: #fff; background: rgba(255,255,255,0.06); }
+
+  .seg-pains { padding-block: clamp(3rem, 7vw, 5rem); }
+  .mh { font-size: var(--step-2); margin-bottom: 1.4rem; }
+  .pains-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+  .pains-grid li { display: flex; gap: 0.8rem; align-items: flex-start; background: var(--mist); border: 1px solid var(--line); border-left: 3px solid var(--red); border-radius: var(--radius); padding: 1.1rem 1.2rem; color: #2c3650; line-height: 1.5; }
+  .pains-grid svg { color: var(--red); flex-shrink: 0; margin-top: 2px; }
+
+  .prose-sec { background: var(--mist); padding-block: clamp(3rem, 7vw, 5rem); }
+  .prose { max-width: 760px; }
+  .prose .lead-p { font-size: var(--step-1); color: #2c3650; margin-bottom: 1.4rem; }
+  .prose :global(h2) { font-size: var(--step-2); margin: 2rem 0 0.9rem; }
+  .prose :global(h3) { font-size: var(--step-1); margin: 1.5rem 0 0.6rem; color: var(--navy); }
+  .prose :global(p) { margin-bottom: 1.1rem; color: #2c3650; }
+  .prose :global(ul) { margin: 0 0 1.2rem 1.2rem; list-style: disc; display: flex; flex-direction: column; gap: 0.5rem; }
+  .authority { display: flex; gap: 0.9rem; align-items: center; margin-top: 2rem; padding: 1.1rem 1.3rem; background: #fff; border: 1px solid var(--line); border-left: 3px solid var(--copper); border-radius: var(--radius); }
+  .seg-photo { margin: 1.6rem 0 0.4rem; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow-md); background: #fff; }
+  .seg-photo img { width: 100%; height: auto; display: block; }
+  .seg-photo figcaption { font-family: var(--font-mono); font-size: 0.74rem; color: var(--muted); padding: 0.7rem 1rem; border-top: 1px solid var(--line); }
+  .auth-ic { color: var(--copper); flex-shrink: 0; }
+  .authority p { margin: 0; font-size: 0.92rem; color: var(--muted); }
+  .authority strong { color: var(--navy); }
+
+  .seg-svc { padding-block: clamp(3rem, 6vw, 4.5rem); }
+  .seg-svc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1.4rem; }
+  .seg-svc-grid a { display: flex; flex-direction: column; gap: 0.4rem; padding: 1.3rem; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg); transition: transform 0.2s, box-shadow 0.2s; }
+  .seg-svc-grid a:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .ssic { color: var(--red); }
+  .seg-svc-grid strong { color: var(--navy); font-family: var(--font-display); }
+  .ssgo { color: var(--red); font-weight: 600; font-size: 0.82rem; }
+</style>

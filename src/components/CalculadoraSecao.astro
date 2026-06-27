@@ -1,0 +1,91 @@
+---
+import Calculadora from '@/components/Calculadora.astro';
+interface Props {
+  heading?: string;
+  text?: string;
+  eyebrow?: string;
+}
+const {
+  eyebrow = 'Calculadora de economia',
+  heading = 'Descubra o potencial de economia da sua empresa',
+  text = 'Responda 7 perguntas rápidas e receba um diagnóstico personalizado — em menos de 1 minuto, sem compromisso.',
+} = Astro.props;
+---
+
+<section class="calc-secao" id="calculadora">
+  <div class="container calc-secao-in">
+    <div class="calc-secao-intro">
+      <span class="eyebrow on-dark">{eyebrow}</span>
+      <h2>{heading}</h2>
+      <p>{text}</p>
+      <ul class="calc-trust">
+        <li>Menos de 1 minuto</li>
+        <li>Sem compromisso</li>
+        <li>Atendimento 24h</li>
+      </ul>
+    </div>
+    <div class="calc-secao-host">
+      <Calculadora />
+    </div>
+  </div>
+</section>
+
+<style>
+  .calc-secao {
+    background: var(--grad-soft);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    scroll-margin-top: 80px;
+  }
+  .calc-secao::after {
+    content: '';
+    position: absolute;
+    right: -140px;
+    bottom: -140px;
+    width: 420px;
+    height: 420px;
+    background: radial-gradient(circle, rgba(200, 49, 26, 0.35), transparent 70%);
+    pointer-events: none;
+  }
+  .calc-secao-in {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+  }
+  .eyebrow.on-dark { color: var(--pink-soft); }
+  .calc-secao-intro h2 {
+    color: #fff;
+    font-size: var(--step-3);
+    margin: 1rem 0 1rem;
+    max-width: 16ch;
+  }
+  .calc-secao-intro p {
+    color: #c6d1ea;
+    font-size: var(--step-1);
+    line-height: 1.55;
+    max-width: 46ch;
+  }
+  .calc-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.8rem;
+  }
+  .calc-trust li {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: #cdd7ee;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 0.4rem 0.8rem;
+    border-radius: 99px;
+  }
+  @media (max-width: 880px) {
+    .calc-secao-in { grid-template-columns: 1fr; }
+  }
+</style>

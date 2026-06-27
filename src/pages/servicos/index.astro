@@ -1,0 +1,112 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ServiceIcon from '@/components/ServiceIcon.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import { SERVICES, SITE } from '@/config/site';
+
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Serviços', href: '/servicos' },
+];
+---
+
+<BaseLayout
+  title="Serviços de Telefonia Corporativa e Internet Empresarial"
+  description="Conheça os serviços da Fourlink Empresas: chips corporativos, internet fibra empresarial, portabilidade, gestão de linhas, consultoria e redução de custos de telefonia."
+  path="/servicos"
+  breadcrumbs={breadcrumbs}
+>
+  <header class="hub-hero">
+    <div class="container">
+      <span class="eyebrow on-dark">Serviços</span>
+      <h1>Soluções completas para a comunicação da sua empresa</h1>
+      <p>Do chip corporativo à fibra empresarial, a Fourlink cuida de cada linha — com gestão, consultoria e foco em reduzir o seu custo.</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container">
+      <ul class="svc-grid">
+        {SERVICES.map((s) => (
+          <li>
+            <a href={`/servicos/${s.slug}`} class="svc-card">
+              <span class="svc-ic"><ServiceIcon name={s.icon} size={24} /></span>
+              <h2>{s.title}</h2>
+              <p>{s.short}</p>
+              <span class="svc-go">Ver detalhes →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .hub-hero {
+    background: var(--grad-soft);
+    color: #fff;
+    padding-block: clamp(3rem, 8vw, 5rem);
+  }
+  .eyebrow.on-dark {
+    color: var(--pink-soft);
+  }
+  .hub-hero h1 {
+    color: #fff;
+    font-size: var(--step-3);
+    margin: 1rem 0 0.9rem;
+    max-width: 20ch;
+  }
+  .hub-hero p {
+    color: #c6d1ea;
+    max-width: 56ch;
+    font-size: var(--step-1);
+  }
+  .svc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 1.2rem;
+  }
+  .svc-card {
+    display: block;
+    height: 100%;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 1.7rem;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  }
+  .svc-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: #d6deef;
+  }
+  .svc-ic {
+    display: inline-flex;
+    padding: 0.7rem;
+    border-radius: 12px;
+    background: var(--mist);
+    color: var(--pink);
+    margin-bottom: 1rem;
+  }
+  .svc-card h2 {
+    font-size: 1.22rem;
+    margin-bottom: 0.4rem;
+  }
+  .svc-card p {
+    color: var(--muted);
+    font-size: 0.94rem;
+    margin-bottom: 1rem;
+  }
+  .svc-go {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--navy);
+  }
+  .svc-card:hover .svc-go {
+    color: var(--pink);
+  }
+</style>

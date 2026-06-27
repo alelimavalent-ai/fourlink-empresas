@@ -1,0 +1,112 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import CalculadoraSecao from '@/components/CalculadoraSecao.astro';
+import { getCollection } from 'astro:content';
+
+const catNomes: Record<string, string> = {
+  custos: 'Redução de Custos',
+  gestao: 'Gestão de Linhas',
+  internet: 'Internet Empresarial',
+  portabilidade: 'Portabilidade',
+  telefonia: 'Telefonia Empresarial',
+};
+
+const artigos = (await getCollection('artigos')).sort(
+  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
+);
+
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Central do Gestor', href: '/central-do-gestor' },
+];
+const fmt = (d: Date) => d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+---
+
+<BaseLayout
+  title="Central do Gestor de Telecom | Fourlink Empresas"
+  description="Guias práticos para gestores: como reduzir custos de telefonia, controlar linhas corporativas, escolher internet empresarial e fazer portabilidade. Conteúdo da Fourlink Empresas."
+  path="/central-do-gestor"
+  breadcrumbs={breadcrumbs}
+>
+  <header class="blog-hero">
+    <div class="container">
+      <span class="eyebrow on-dark">Central do Gestor</span>
+      <h1>Conhecimento para quem decide a telecom da empresa</h1>
+      <p>Guias diretos sobre custos, gestão de linhas, internet e portabilidade — escritos por quem vive o setor há quase três décadas.</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container">
+      <ul class="articles">
+        {artigos.map((a) => (
+          <li>
+            <a href={`/central-do-gestor/${a.data.category}/${a.slug}`} class="art-card">
+              <span class="cat mono">{catNomes[a.data.category]}</span>
+              <h2>{a.data.title}</h2>
+              <p>{a.data.description}</p>
+              <span class="meta mono">{fmt(a.data.publishedAt)} · {a.data.readingMinutes} min de leitura</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CalculadoraSecao heading="Antes de continuar lendo, veja quanto a sua empresa pode economizar" />
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .blog-hero {
+    background: var(--grad-soft);
+    color: #fff;
+    padding-block: clamp(3rem, 8vw, 5rem);
+  }
+  .eyebrow.on-dark { color: var(--pink-soft); }
+  .blog-hero h1 { color: #fff; font-size: var(--step-3); margin: 1rem 0 0.8rem; max-width: 20ch; }
+  .blog-hero p { color: #c6d1ea; max-width: 58ch; font-size: var(--step-1); }
+  .articles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.4rem;
+  }
+  .art-card {
+    display: block;
+    height: 100%;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 1.7rem;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  }
+  .art-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: #d6deef;
+  }
+  .cat {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 0.8rem;
+  }
+  .art-card h2 {
+    font-size: 1.24rem;
+    margin-bottom: 0.6rem;
+    line-height: 1.25;
+  }
+  .art-card p {
+    color: var(--muted);
+    font-size: 0.94rem;
+    margin-bottom: 1.2rem;
+  }
+  .meta {
+    font-size: 0.76rem;
+    color: var(--muted-light);
+  }
+</style>

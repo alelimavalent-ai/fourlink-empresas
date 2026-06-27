@@ -1,0 +1,180 @@
+---
+import { NAP, NAV, SERVICES, whatsappUrl, SITE } from '@/config/site';
+const year = new Date().getFullYear();
+const a = NAP.address;
+---
+
+<footer class="ft">
+  <div class="container ft-grid">
+    <div class="ft-brand">
+      <a href="/" class="brand" aria-label="Fourlink Empresas">
+        <img src="/img/logo-fourlink-512.webp" width="46" height="46" alt="Logo Fourlink Telecom" class="brand-logo" loading="lazy" decoding="async" />
+        <span class="wm">Four<span class="lk">link</span> Empresas</span>
+      </a>
+      <p class="ft-tag">{SITE.tagline}.</p>
+      <p class="ft-areas">
+        Atendimento em <strong>{NAP.areasServed.join(', ')}</strong> — {NAP.hours}.
+      </p>
+      <a href={whatsappUrl()} class="btn btn-primary" target="_blank" rel="noopener">Falar com a Alessandra</a>
+      <a href={SITE.instagram} class="ft-social" target="_blank" rel="noopener" aria-label={`Instagram da Fourlink Empresas: ${SITE.instagramHandle}`}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+        </svg>
+        <span>{SITE.instagramHandle}</span>
+      </a>
+    </div>
+
+    <nav class="ft-col" aria-label="Serviços">
+      <h3>Serviços</h3>
+      <ul>{SERVICES.map((s) => <li><a href={`/servicos/${s.slug}`}>{s.title}</a></li>)}</ul>
+    </nav>
+
+    <nav class="ft-col" aria-label="Institucional">
+      <h3>Fourlink</h3>
+      <ul>
+        {NAV.filter((n) => n.href !== '/').map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        <li><a href="/faq">Perguntas frequentes</a></li>
+      </ul>
+    </nav>
+
+    <address class="ft-col ft-contact">
+      <h3>Contato</h3>
+      <p>{a.venue}<br />{a.street}, {a.unit}<br />{a.neighborhood} — {a.city}/{a.state}</p>
+      <p class="ft-park">Estacionamento no local</p>
+      <p><a href={`tel:${NAP.phoneE164}`}>{NAP.phoneDisplay}</a></p>
+      <p><a href={`mailto:${NAP.email}`}>{NAP.email}</a></p>
+    </address>
+  </div>
+
+  <div class="ft-bottom">
+    <div class="container ft-bottom-in">
+      <p>© {year} {SITE.name}. Todos os direitos reservados.</p>
+      <p class="ft-disclaimer">
+        Economia de {' '}<span class="mono">até 30%</span>, dependendo da análise personalizada da fatura e do perfil
+        da empresa. Não há promessa de economia garantida.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ft {
+    background: var(--grad-soft);
+    color: #cfd8ec;
+    margin-top: 2rem;
+  }
+  .ft-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+    gap: 2.5rem 2rem;
+    padding-block: clamp(3rem, 6vw, 4.5rem);
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .brand-logo {
+    border-radius: 50%;
+    display: block;
+  }
+  .ft-social {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    color: #cdd7ee;
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    transition: color 0.18s ease;
+  }
+  .ft-social:hover { color: #fff; }
+  .ft-social svg { color: var(--copper-soft); }
+  .wm {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #fff;
+    letter-spacing: -0.03em;
+  }
+  .wm .lk {
+    color: #6ea3ff;
+  }
+  .ft-tag {
+    margin: 1rem 0 0.4rem;
+    color: #aab8d6;
+  }
+  .ft-areas {
+    margin-bottom: 1.3rem;
+    font-size: 0.92rem;
+    color: #9fb0d2;
+  }
+  .ft-areas strong {
+    color: #fff;
+    font-weight: 600;
+  }
+  .ft-col h3 {
+    color: #fff;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+  .ft-col ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .ft-col a {
+    color: #c2cce4;
+    font-size: 0.93rem;
+    transition: color 0.15s;
+  }
+  .ft-col a:hover {
+    color: var(--pink-soft);
+  }
+  .ft-contact {
+    font-style: normal;
+  }
+  .ft-contact p {
+    margin-bottom: 0.7rem;
+    font-size: 0.93rem;
+    line-height: 1.6;
+  }
+  .ft-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .ft-bottom-in {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-block: 1.3rem;
+    font-size: 0.82rem;
+    color: #8fa0c2;
+  }
+  .ft-disclaimer {
+    max-width: 560px;
+  }
+  .ft-disclaimer .mono {
+    color: var(--pink-soft);
+  }
+  @media (max-width: 860px) {
+    .ft-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .ft-brand {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 520px) {
+    .ft-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

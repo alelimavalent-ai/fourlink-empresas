@@ -1,0 +1,84 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Calculadora from '@/components/Calculadora.astro';
+import { ECONOMY_SHORT } from '@/config/site';
+
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Calculadora de Economia', href: '/calculadora-de-economia' },
+];
+---
+
+<BaseLayout
+  title="Calculadora de Economia em Telefonia Empresarial | Fourlink"
+  description={`Descubra em 1 minuto o potencial de economia da sua empresa em telefonia — ${ECONOMY_SHORT}. Receba uma proposta personalizada com a Fourlink Empresas.`}
+  path="/calculadora-de-economia"
+  breadcrumbs={breadcrumbs}
+>
+  <section class="calc-page">
+    <div class="container calc-grid">
+      <div class="calc-intro">
+        <span class="eyebrow on-dark">Calculadora de economia</span>
+        <h1>Quanto a sua empresa pode economizar?</h1>
+        <p>
+          Responda sete perguntas rápidas e receba um diagnóstico personalizado com o seu nível de
+          potencial de economia. Ao final, a Alessandra recebe seus dados e retorna com uma análise da sua empresa.
+        </p>
+        <ul class="trust">
+          <li>Leva menos de 1 minuto</li>
+          <li>Sem compromisso</li>
+          <li>Atendimento 24h</li>
+        </ul>
+      </div>
+      <div class="calc-host">
+        <Calculadora />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .calc-page {
+    background: var(--grad-soft);
+    color: #fff;
+    padding-block: clamp(2.5rem, 7vw, 5rem);
+    min-height: 70vh;
+  }
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+  .eyebrow.on-dark { color: var(--pink-soft); }
+  .calc-intro h1 {
+    color: #fff;
+    font-size: var(--step-3);
+    margin: 1rem 0 1rem;
+    max-width: 16ch;
+  }
+  .calc-intro p {
+    color: #c6d1ea;
+    max-width: 50ch;
+    font-size: var(--step-1);
+    line-height: 1.55;
+  }
+  .trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.8rem;
+  }
+  .trust li {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: #cdd7ee;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 0.4rem 0.8rem;
+    border-radius: 99px;
+  }
+  @media (max-width: 860px) {
+    .calc-grid { grid-template-columns: 1fr; }
+  }
+</style>

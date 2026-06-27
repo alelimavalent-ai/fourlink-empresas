@@ -1,0 +1,43 @@
+---
+/**
+ * Símbolo Fourlink — quatro "links" (rounded-squares) em diamante.
+ * Recriação vetorial do logo, temável e nítida em qualquer tamanho.
+ */
+interface Props {
+  size?: number;
+  variant?: 'gradient' | 'light' | 'pink' | 'navy';
+  class?: string;
+  title?: string;
+}
+const { size = 40, variant = 'gradient', class: klass = '', title = 'Fourlink' } = Astro.props;
+const uid = 'fl-' + Math.random().toString(36).slice(2, 8);
+const stroke =
+  variant === 'light' ? '#ffffff' : variant === 'pink' ? '#c8311a' : variant === 'navy' ? '#1b2f5e' : `url(#${uid})`;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 100 100"
+  role="img"
+  aria-label={title}
+  class={klass}
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  {variant === 'gradient' && (
+    <defs>
+      <linearGradient id={uid} x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#1b2f5e" />
+        <stop offset="0.55" stop-color="#b87a4f" />
+        <stop offset="1" stop-color="#c8311a" />
+      </linearGradient>
+    </defs>
+  )}
+  <g transform="rotate(45 50 50)">
+    <rect x="22" y="22" width="26" height="26" rx="9" stroke={stroke} stroke-width="6.5" />
+    <rect x="52" y="22" width="26" height="26" rx="9" stroke={stroke} stroke-width="6.5" />
+    <rect x="22" y="52" width="26" height="26" rx="9" stroke={stroke} stroke-width="6.5" />
+    <rect x="52" y="52" width="26" height="26" rx="9" stroke={stroke} stroke-width="6.5" />
+  </g>
+</svg>

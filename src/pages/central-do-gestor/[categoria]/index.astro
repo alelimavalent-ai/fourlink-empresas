@@ -1,0 +1,89 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import { getCollection } from 'astro:content';
+
+const catNomes: Record<string, string> = {
+  custos: 'Redução de Custos',
+  gestao: 'Gestão de Linhas',
+  internet: 'Internet Empresarial',
+  portabilidade: 'Portabilidade',
+  telefonia: 'Telefonia Empresarial',
+};
+
+export async function getStaticPaths() {
+  return Object.keys({
+    custos: 1, gestao: 1, internet: 1, portabilidade: 1, telefonia: 1,
+  }).map((categoria) => ({ params: { categoria } }));
+}
+
+const { categoria } = Astro.params;
+const nome = catNomes[categoria as string] ?? 'Central do Gestor';
+const artigos = (await getCollection('artigos'))
+  .filter((a) => a.data.category === categoria)
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+
+const path = `/central-do-gestor/${categoria}`;
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Central do Gestor', href: '/central-do-gestor' },
+  { name: nome, href: path },
+];
+const fmt = (d: Date) => d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+---
+
+<BaseLayout
+  title={`${nome} — Central do Gestor | Fourlink Empresas`}
+  description={`Artigos sobre ${nome.toLowerCase()} para gestores de telecom. Conteúdo prático da Fourlink Empresas.`}
+  path={path}
+  breadcrumbs={breadcrumbs}
+>
+  <header class="cat-hero">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Início</a><span>/</span><a href="/central-do-gestor">Central do Gestor</a><span>/</span><b>{nome}</b>
+      </nav>
+      <h1>{nome}</h1>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container">
+      {artigos.length > 0 ? (
+        <ul class="articles">
+          {artigos.map((a) => (
+            <li>
+              <a href={`/central-do-gestor/${a.data.category}/${a.slug}`} class="art-card">
+                <h2>{a.data.title}</h2>
+                <p>{a.data.description}</p>
+                <span class="meta mono">{fmt(a.data.publishedAt)} · {a.data.readingMinutes} min</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="soon">Novos artigos sobre {nome.toLowerCase()} sendo publicados em breve.</p>
+      )}
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .cat-hero { background: var(--grad-soft); color: #fff; padding-block: clamp(2.5rem, 7vw, 4.2rem); }
+  .crumbs { font-size: 0.8rem; color: #9fb0d2; display: flex; gap: 0.45rem; align-items: center; margin-bottom: 1.2rem; flex-wrap: wrap; }
+  .crumbs a:hover { color: #fff; }
+  .crumbs b { color: #fff; font-weight: 500; }
+  .cat-hero h1 { color: #fff; font-size: var(--step-3); }
+  .articles { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.4rem; }
+  .art-card {
+    display: block; height: 100%; background: #fff; border: 1px solid var(--line);
+    border-radius: var(--radius-lg); padding: 1.7rem; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  }
+  .art-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: #d6deef; }
+  .art-card h2 { font-size: 1.24rem; margin-bottom: 0.6rem; line-height: 1.25; }
+  .art-card p { color: var(--muted); font-size: 0.94rem; margin-bottom: 1.2rem; }
+  .meta { font-size: 0.76rem; color: var(--muted-light); }
+  .soon { color: var(--muted); }
+</style>

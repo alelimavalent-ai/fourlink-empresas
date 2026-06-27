@@ -1,0 +1,179 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Equipe from '@/components/Equipe.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import { SITE, FOUNDER, CODIRECTOR, NAP } from '@/config/site';
+
+const path = '/sobre';
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Sobre', href: path },
+];
+const personSchema = {
+  '@type': 'Person',
+  '@id': `${SITE.domain}/#alessandro`,
+  name: FOUNDER.name,
+  jobTitle: FOUNDER.role,
+  description: FOUNDER.bio,
+  worksFor: { '@id': `${SITE.domain}/#organization` },
+  ...(FOUNDER.sameAs.length ? { sameAs: FOUNDER.sameAs } : {}),
+};
+---
+
+<BaseLayout
+  title="Sobre a Fourlink Empresas — Especialistas em Telecom"
+  description={`Conheça a Fourlink Empresas e ${FOUNDER.name}, com mais de ${FOUNDER.experienceYears} anos em telecomunicações. Especialistas em telefonia corporativa e internet empresarial no RJ, MG e ES.`}
+  path={path}
+  breadcrumbs={breadcrumbs}
+  schemas={[personSchema]}
+>
+  <header class="about-hero">
+    <div class="container">
+      <span class="eyebrow on-dark">Sobre a Fourlink</span>
+      <h1>Telecom não precisa ser caro nem complicado</h1>
+      <p>
+        A Fourlink Empresas nasceu para simplificar a telefonia e a internet das empresas do Sudeste —
+        com diagnóstico honesto, gestão de verdade e atendimento que responde a qualquer hora.
+      </p>
+    </div>
+  </header>
+
+  <section class="section founder">
+    <div class="container">
+      <span class="eyebrow">Liderança</span>
+      <h2 class="lead-title">Fundada e dirigida por quem vive telecom</h2>
+      <p class="lead-sub">À frente da Fourlink Empresas estão duas pessoas que cuidam, todos os dias, de cada empresa cliente — da estratégia comercial à estrutura do atendimento.</p>
+
+      <div class="leaders">
+        <article class="leader">
+          <figure>
+            <img
+              src="/img/ceo-valentim-880.webp"
+              srcset="/img/ceo-valentim-480.webp 480w, /img/ceo-valentim-880.webp 880w"
+              sizes="(max-width: 760px) 100vw, 440px"
+              width="880" height="1100"
+              alt={`${FOUNDER.name}, ${FOUNDER.role} da Fourlink Empresas`}
+              loading="lazy" decoding="async"
+            />
+          </figure>
+          <div class="leader-info">
+            <h3>{FOUNDER.name}</h3>
+            <p class="role mono">CEO · Especialista Corporativo em Telecom</p>
+            <p class="leader-bio">{FOUNDER.bio}</p>
+            <p class="leader-tag mono">+{FOUNDER.experienceYears} anos em telecomunicações</p>
+          </div>
+        </article>
+
+        <article class="leader">
+          <figure>
+            <img
+              src="/img/lene-silva-880.webp"
+              srcset="/img/lene-silva-480.webp 480w, /img/lene-silva-880.webp 880w"
+              sizes="(max-width: 760px) 100vw, 440px"
+              width="880" height="1100"
+              alt={`${CODIRECTOR.name}, ${CODIRECTOR.role} da Fourlink Empresas`}
+              loading="lazy" decoding="async"
+            />
+          </figure>
+          <div class="leader-info">
+            <h3>{CODIRECTOR.name}</h3>
+            <p class="role mono">Diretora · Cofundadora</p>
+            <p class="leader-bio">{CODIRECTOR.bio}</p>
+            <p class="leader-tag mono">Direção e operação da Fourlink</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section culture">
+    <div class="container culture-grid">
+      <div>
+        <span class="eyebrow">Cultura Fourlink</span>
+        <h2>Formamos gente enquanto cuidamos de empresas</h2>
+        <p class="lead">
+          A Fourlink mantém um programa de jovens aprendizes: abrimos a porta para novos talentos e os formamos
+          dentro do dia a dia da operação. Acreditamos que atendimento de excelência se constrói com gente que
+          cresce junto com a empresa.
+        </p>
+      </div>
+      <ul class="values">
+        <li><b>Honestidade no diagnóstico.</b> O número da economia aparece depois da análise, sem promessa vazia.</li>
+        <li><b>Atendimento de gente.</b> Pessoas reais, disponíveis {NAP.hours.toLowerCase()}.</li>
+        <li><b>Relação de longo prazo.</b> A gestão contínua mantém o custo baixo ao longo do tempo.</li>
+        <li><b>Formação de talentos.</b> Investimos em jovens aprendizes e no crescimento do time.</li>
+      </ul>
+    </div>
+  </section>
+
+  <Equipe heading="Quem cuida da sua empresa" />
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .about-hero {
+    background: var(--grad-soft);
+    color: #fff;
+    padding-block: clamp(3rem, 8vw, 5.5rem);
+  }
+  .eyebrow.on-dark { color: var(--pink-soft); }
+  .about-hero h1 { color: #fff; font-size: var(--step-3); margin: 1rem 0 1rem; max-width: 18ch; }
+  .about-hero p { color: #c6d1ea; max-width: 60ch; font-size: var(--step-1); line-height: 1.55; }
+
+  .lead-title {
+    font-size: var(--step-3);
+    margin: 0.6rem 0 0.8rem;
+    max-width: 18ch;
+  }
+  .lead-sub { color: var(--muted); max-width: 60ch; margin-bottom: 2.6rem; font-size: 1.05rem; }
+  .leaders {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.5rem, 4vw, 2.6rem);
+    align-items: start;
+  }
+  .leader {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .leader figure { margin: 0; aspect-ratio: 4 / 5; overflow: hidden; background: var(--mist); }
+  .leader figure img { width: 100%; height: 100%; object-fit: cover; object-position: center 22%; display: block; }
+  .leader-info { padding: 1.6rem 1.7rem 1.9rem; }
+  .leader-info h3 { font-size: var(--step-2); color: var(--navy); margin-bottom: 0.25rem; }
+  .role { color: var(--pink); font-size: 0.82rem; letter-spacing: 0.02em; margin-bottom: 1rem; }
+  .leader-bio { color: #2c3650; font-size: 0.96rem; line-height: 1.6; margin-bottom: 1.1rem; }
+  .leader-tag {
+    display: inline-block; font-size: 0.74rem; color: var(--navy);
+    background: var(--mist); border: 1px solid var(--line); border-radius: 99px; padding: 0.35rem 0.8rem;
+  }
+
+  .culture { background: var(--mist); }
+  .culture-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  .culture h2 { font-size: var(--step-2); margin: 0.6rem 0 0.9rem; max-width: 16ch; }
+  .values {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .values li {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.3rem;
+    color: var(--muted);
+  }
+  .values b { color: var(--navy); }
+
+  @media (max-width: 820px) {
+    .leaders, .culture-grid { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,163 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import FaqList from '@/components/FaqList.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import { getCollection } from 'astro:content';
+import { articleSchema, faqSchema } from '@/lib/schema';
+import { whatsappUrl } from '@/config/site';
+
+export async function getStaticPaths() {
+  const artigos = await getCollection('artigos');
+  return artigos.map((entry) => ({
+    params: { categoria: entry.data.category, slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await entry.render();
+const catNomes: Record<string, string> = {
+  custos: 'Redução de Custos',
+  gestao: 'Gestão de Linhas',
+  internet: 'Internet Empresarial',
+  portabilidade: 'Portabilidade',
+  telefonia: 'Telefonia Empresarial',
+};
+const path = `/central-do-gestor/${data.category}/${entry.slug}`;
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Central do Gestor', href: '/central-do-gestor' },
+  { name: catNomes[data.category], href: `/central-do-gestor/${data.category}` },
+  { name: data.title, href: path },
+];
+const schemas = [
+  articleSchema({
+    title: data.title,
+    description: data.description,
+    path,
+    published: data.publishedAt,
+    updated: data.updatedAt,
+    author: data.author,
+  }),
+  faqSchema(data.faqs),
+].filter(Boolean) as object[];
+
+const fmt = (d: Date) => d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+---
+
+<BaseLayout
+  title={data.seoTitle ?? data.title}
+  description={data.description}
+  path={path}
+  ogType="article"
+  breadcrumbs={breadcrumbs}
+  schemas={schemas}
+>
+  <article>
+    <header class="art-hero">
+      <div class="container art-head">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/">Início</a><span>/</span><a href="/central-do-gestor">Central do Gestor</a><span>/</span>
+          <a href={`/central-do-gestor/${data.category}`}>{catNomes[data.category]}</a>
+        </nav>
+        <h1>{data.title}</h1>
+        <p class="art-meta mono">
+          Por {data.author} · {fmt(data.publishedAt)} · {data.readingMinutes} min de leitura
+        </p>
+      </div>
+    </header>
+
+    <div class="container art-layout">
+      <div class="art-main">
+        <aside class="answer-box">
+          <span class="eyebrow">Resposta rápida</span>
+          <p>{data.answer}</p>
+        </aside>
+
+        <div class="prose">
+          <Content />
+        </div>
+
+        <aside class="art-cta">
+          <p>Quer uma análise personalizada para sua empresa?</p>
+          <a href={whatsappUrl('Li um artigo na Central do Gestor e quero uma análise personalizada para a minha empresa.')} class="btn btn-primary" target="_blank" rel="noopener">Converse agora com a Alessandra</a>
+        </aside>
+      </div>
+    </div>
+
+    <FaqList faqs={data.faqs} title="Perguntas frequentes" />
+  </article>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .art-hero {
+    background: var(--grad-soft);
+    color: #fff;
+    padding-block: clamp(2.5rem, 7vw, 4.2rem);
+  }
+  .art-head { max-width: 820px; }
+  .crumbs {
+    font-size: 0.8rem;
+    color: #9fb0d2;
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    margin-bottom: 1.4rem;
+    flex-wrap: wrap;
+  }
+  .crumbs a:hover { color: #fff; }
+  .art-hero h1 {
+    color: #fff;
+    font-size: var(--step-3);
+    max-width: 24ch;
+  }
+  .art-meta {
+    margin-top: 1rem;
+    color: #9fb0d2;
+    font-size: 0.82rem;
+  }
+  .art-layout {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+  }
+  .art-main { max-width: 760px; margin-inline: auto; }
+  .answer-box {
+    background: var(--mist);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--pink);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.5rem;
+    margin-bottom: 2.2rem;
+  }
+  .answer-box .eyebrow { margin-bottom: 0.5rem; }
+  .answer-box p { color: var(--navy); font-size: 1.06rem; line-height: 1.55; margin: 0; }
+  .prose :global(h2) { font-size: var(--step-2); margin: 2rem 0 0.8rem; }
+  .prose :global(h3) { font-size: var(--step-1); margin: 1.5rem 0 0.6rem; color: var(--navy); }
+  .prose :global(p) { margin-bottom: 1.1rem; color: #2c3650; }
+  .prose :global(ol), .prose :global(ul) {
+    margin: 0 0 1.2rem 1.3rem; display: flex; flex-direction: column; gap: 0.5rem;
+  }
+  .prose :global(ol) { list-style: decimal; }
+  .prose :global(ul) { list-style: disc; }
+  .prose :global(li) { color: #2c3650; }
+  .prose :global(a) {
+    color: var(--pink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px;
+  }
+  .prose :global(hr) { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+  .art-cta {
+    margin-top: 2.4rem;
+    padding: 1.6rem 1.8rem;
+    background: var(--mist);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--red);
+    border-radius: var(--radius);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .art-cta p { font-family: var(--font-display); font-weight: 600; color: var(--navy); font-size: 1.05rem; margin: 0; }
+</style>

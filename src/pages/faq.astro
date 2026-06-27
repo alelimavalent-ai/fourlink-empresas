@@ -1,0 +1,46 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import FaqList from '@/components/FaqList.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import { getCollection } from 'astro:content';
+import { faqSchema } from '@/lib/schema';
+
+const faqEntries = (await getCollection('faqs')).sort((a, b) => a.data.order - b.data.order);
+const faqs = faqEntries.map((f) => ({ q: f.data.q, a: f.data.a }));
+
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Perguntas frequentes', href: '/faq' },
+];
+---
+
+<BaseLayout
+  title="Perguntas Frequentes | Fourlink Empresas"
+  description="Tire suas dúvidas sobre telefonia corporativa, internet empresarial, portabilidade, CNPJ/MEI e a economia que a Fourlink Empresas pode gerar."
+  path="/faq"
+  breadcrumbs={breadcrumbs}
+  schemas={[faqSchema(faqs)].filter(Boolean) as object[]}
+>
+  <header class="faq-hero">
+    <div class="container">
+      <span class="eyebrow on-dark">Perguntas frequentes</span>
+      <h1>Tudo o que você precisa saber</h1>
+      <p>As dúvidas mais comuns sobre como a Fourlink ajuda a sua empresa a se comunicar melhor e gastar menos.</p>
+    </div>
+  </header>
+
+  <FaqList faqs={faqs} title="" />
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .faq-hero {
+    background: var(--grad-soft);
+    color: #fff;
+    padding-block: clamp(3rem, 8vw, 5rem);
+  }
+  .eyebrow.on-dark { color: var(--pink-soft); }
+  .faq-hero h1 { color: #fff; font-size: var(--step-3); margin: 1rem 0 0.8rem; }
+  .faq-hero p { color: #c6d1ea; max-width: 56ch; font-size: var(--step-1); }
+</style>

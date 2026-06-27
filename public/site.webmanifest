@@ -1,0 +1,13 @@
+{
+  "name": "Fourlink Empresas",
+  "short_name": "Fourlink",
+  "description": "Telefonia corporativa e internet empresarial no RJ, MG e ES.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e1b3c",
+  "theme_color": "#1b2f5e",
+  "icons": [
+    { "src": "/img/logo-badge-256.png", "sizes": "256x256", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

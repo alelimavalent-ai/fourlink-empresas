@@ -1,0 +1,59 @@
+---
+import ServiceIcon from '@/components/ServiceIcon.astro';
+import { getCollection } from 'astro:content';
+
+const segmentos = (await getCollection('segmentos')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="section seg-home">
+  <div class="container">
+    <div class="seg-home-head">
+      <div>
+        <span class="eyebrow">Soluções por segmento</span>
+        <h2>Telefonia e internet para o seu tipo de empresa</h2>
+        <p class="seg-home-sub">Cada negócio tem um desafio diferente de telecom. Veja como a Fourlink resolve o do seu segmento.</p>
+      </div>
+      <a href="/solucoes" class="btn btn-ghost-navy">Ver todas as soluções</a>
+    </div>
+
+    <ul class="seg-home-grid">
+      {segmentos.map((s) => (
+        <li>
+          <a href={`/solucoes/${s.data.customSlug}`}>
+            <span class="sh-ic"><ServiceIcon name={s.data.icon} size={24} /></span>
+            <strong>{s.data.segmento}</strong>
+            <span class="sh-go">Ver solução →</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .seg-home { background: var(--mist); }
+  .seg-home-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2rem;
+  }
+  .seg-home h2 { font-size: var(--step-2); color: var(--navy); margin: 0.6rem 0 0.6rem; max-width: 20ch; }
+  .seg-home-sub { color: var(--muted); max-width: 56ch; }
+  .btn-ghost-navy { background: transparent; color: var(--navy); border: 1px solid var(--line); white-space: nowrap; }
+  .btn-ghost-navy:hover { border-color: var(--navy); background: #fff; }
+
+  .seg-home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.9rem;
+  }
+  .seg-home-grid a {
+    display: flex; flex-direction: column; gap: 0.5rem; height: 100%;
+    padding: 1.2rem 1.3rem; background: #fff; border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  }
+  .seg-home-grid a:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: #d6deef; }
+  .sh-ic { display: inline-grid; place-items: center; width: 42px; height: 42px; border-radius: 11px; background: var(--mist); color: var(--red); }
+  .seg-home-grid strong { color: var(--navy); font-family: var(--font-display); font-size: 1.02rem; flex: 1; }
+  .sh-go { color: var(--red); font-weight: 600; font-size: 0.8rem; }
+</style>

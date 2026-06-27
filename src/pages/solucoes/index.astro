@@ -1,0 +1,84 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import ServiceIcon from '@/components/ServiceIcon.astro';
+import { getCollection } from 'astro:content';
+import { whatsappUrl } from '@/config/site';
+
+const segmentos = (await getCollection('segmentos')).sort((a, b) => a.data.order - b.data.order);
+const path = '/solucoes';
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Soluções', href: path },
+];
+const wa = whatsappUrl('Quero entender qual a melhor solução de telecom para o meu segmento de empresa.');
+---
+
+<BaseLayout
+  title="Soluções por segmento — telefonia e internet por tipo de empresa | Fourlink"
+  description="A Fourlink Empresas tem soluções de telefonia corporativa e internet empresarial pensadas para cada segmento: clínicas, advocacia, contabilidade, restaurantes, hotéis, transportadoras, indústrias e construtoras. RJ, MG e ES."
+  path={path}
+  breadcrumbs={breadcrumbs}
+>
+  <header class="sol-hero">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Início</a><span>/</span><b>Soluções</b>
+      </nav>
+      <span class="eyebrow dk">Soluções por segmento</span>
+      <h1>Telefonia e internet pensadas para o seu tipo de empresa</h1>
+      <p class="intro">
+        Cada segmento tem um desafio diferente de telecom. Escolha o seu para ver como a Fourlink
+        resolve — com análise da sua fatura antes de qualquer proposta.
+      </p>
+      <div class="hero-cta">
+        <a href={wa} class="btn btn-primary" target="_blank" rel="noopener">Falar com a Alessandra</a>
+        <a href="/calculadora-de-economia" class="btn btn-ghost-d">Calcular economia</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="sol-sec">
+    <div class="container">
+      <ul class="sol-grid">
+        {segmentos.map((s) => (
+          <li>
+            <a href={`/solucoes/${s.data.customSlug}`}>
+              <span class="sol-ic"><ServiceIcon name={s.data.icon} size={26} /></span>
+              <strong>{s.data.segmento}</strong>
+              <span class="sol-desc">{s.data.intro.split('.')[0]}.</span>
+              <span class="sol-go">Ver solução →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="sol-more">Não encontrou o seu segmento? <a href={wa} target="_blank" rel="noopener">Fale com a Alessandra</a> — atendemos empresas de todos os portes em RJ, MG e ES.</p>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .sol-hero { background: var(--grad-soft); color: #fff; padding-block: clamp(2.6rem, 7vw, 4.5rem); }
+  .crumbs { font-size: 0.8rem; color: #9fb0d2; display: flex; gap: 0.45rem; align-items: center; margin-bottom: 1.4rem; }
+  .crumbs a:hover { color: #fff; } .crumbs b { color: #fff; font-weight: 500; }
+  .eyebrow.dk { color: var(--copper-soft); }
+  .sol-hero h1 { color: #fff; font-size: var(--step-3); margin: 0.7rem 0 1rem; max-width: 20ch; }
+  .intro { color: #c6d1ea; max-width: 60ch; font-size: var(--step-1); line-height: 1.55; }
+  .hero-cta { margin-top: 1.6rem; display: flex; flex-wrap: wrap; gap: 0.8rem; }
+  .btn-ghost-d { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+  .btn-ghost-d:hover { border-color: #fff; background: rgba(255,255,255,0.06); }
+
+  .sol-sec { padding-block: clamp(3rem, 7vw, 5rem); }
+  .sol-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.1rem; }
+  .sol-grid a { display: flex; flex-direction: column; gap: 0.5rem; height: 100%; padding: 1.5rem; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg); transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+  .sol-grid a:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: #d6deef; }
+  .sol-ic { display: inline-grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--mist); color: var(--red); }
+  .sol-grid strong { color: var(--navy); font-family: var(--font-display); font-size: 1.1rem; }
+  .sol-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.5; flex: 1; }
+  .sol-go { color: var(--red); font-weight: 600; font-size: 0.84rem; }
+  .sol-more { margin-top: 2rem; color: var(--muted); }
+  .sol-more a { color: var(--red); font-weight: 600; text-decoration: none; }
+  .sol-more a:hover { text-decoration: underline; }
+</style>

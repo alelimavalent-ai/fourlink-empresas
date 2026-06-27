@@ -1,0 +1,158 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { NAP, whatsappUrl, SITE } from '@/config/site';
+
+const a = NAP.address;
+const path = '/contato';
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Contato', href: path },
+];
+const contactSchema = {
+  '@type': 'ContactPage',
+  url: `${SITE.domain}${path}`,
+  about: { '@id': `${SITE.domain}/#organization` },
+};
+---
+
+<BaseLayout
+  title="Contato | Fourlink Empresas"
+  description="Fale com a Fourlink Empresas: WhatsApp, e-mail e endereço. Atendimento corporativo 24 horas para empresas no RJ, MG e ES."
+  path={path}
+  breadcrumbs={breadcrumbs}
+  schemas={[contactSchema]}
+>
+  <header class="contact-hero">
+    <div class="container">
+      <span class="eyebrow on-dark">Contato</span>
+      <h1>Vamos conversar sobre a telecom da sua empresa</h1>
+      <p>A Alessandra e o time atendem {NAP.hours.toLowerCase()}. Escolha o canal que preferir.</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container contact-grid">
+      <a href={whatsappUrl()} class="contact-card highlight" target="_blank" rel="noopener">
+        <span class="ic">💬</span>
+        <h2>WhatsApp</h2>
+        <p>{NAP.phoneDisplay}</p>
+        <span class="go">Falar com a Alessandra →</span>
+      </a>
+      <a href={`mailto:${NAP.email}`} class="contact-card">
+        <span class="ic">✉️</span>
+        <h2>E-mail</h2>
+        <p>{NAP.email}</p>
+        <span class="go">Enviar e-mail →</span>
+      </a>
+      <div class="contact-card">
+        <span class="ic">📍</span>
+        <h2>Endereço</h2>
+        <p>{a.venue}<br />{a.street}, {a.unit}<br />{a.neighborhood} — {a.city}/{a.state}<br />CEP {a.postalCode}</p>
+      </div>
+      <a href="/calculadora-de-economia" class="contact-card">
+        <span class="ic">🧮</span>
+        <h2>Calculadora</h2>
+        <p>Descubra seu potencial de economia em 1 minuto.</p>
+        <span class="go">Calcular agora →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section local">
+    <div class="container">
+      <span class="eyebrow">Nossa localização</span>
+      <h2 class="local-title">Onde a Fourlink atende</h2>
+      <figure class="local-banner">
+        <img
+          src="/img/dhc-local-960.webp"
+          srcset="/img/dhc-local-640.webp 640w, /img/dhc-local-960.webp 960w"
+          sizes="(max-width: 1120px) 100vw, 1040px"
+          width="960"
+          height="408"
+          alt="Entrada do DHC Offices, na Av. Dom Hélder Câmara 6644, onde fica a Fourlink Empresas"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <div class="local-info">
+        <p class="local-addr">
+          A Fourlink Empresas está localizada no {a.venue}, na {a.street}, {a.unit},
+          {a.neighborhood}, {a.city} — {a.state}.
+        </p>
+        <p class="local-park"><span class="park-ic" aria-hidden="true">🅿️</span> {NAP.parking}</p>
+        <a
+          href="https://share.google/dbFd76wUFxUTFz4Hd"
+          class="btn btn-ghost-dark"
+          target="_blank"
+          rel="noopener"
+        >Ver no Google Maps</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact-hero {
+    background: var(--grad-soft);
+    color: #fff;
+    padding-block: clamp(3rem, 8vw, 5rem);
+  }
+  .eyebrow.on-dark { color: var(--pink-soft); }
+  .contact-hero h1 { color: #fff; font-size: var(--step-3); margin: 1rem 0 0.8rem; max-width: 20ch; }
+  .contact-hero p { color: #c6d1ea; max-width: 52ch; font-size: var(--step-1); }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+  }
+  .contact-card {
+    display: block;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 1.7rem;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  }
+  .contact-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: #d6deef;
+  }
+  .contact-card.highlight {
+    background: var(--grad-soft);
+    color: #fff;
+    border: 0;
+  }
+  .ic { font-size: 1.6rem; display: block; margin-bottom: 0.8rem; }
+  .contact-card h2 { font-size: 1.2rem; margin-bottom: 0.4rem; }
+  .contact-card.highlight h2 { color: #fff; }
+  .contact-card p { color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
+  .contact-card.highlight p { color: #d7deef; }
+  .go {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--pink);
+  }
+  .contact-card.highlight .go { color: #fff; }
+
+  .local { background: var(--mist); }
+  .local-title { font-size: var(--step-2); color: var(--navy); margin: 0.6rem 0 1.4rem; }
+  .local-banner {
+    margin: 0 0 1.6rem;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-md);
+  }
+  .local-banner img { width: 100%; height: clamp(180px, 30vw, 320px); object-fit: cover; display: block; }
+  .local-info { display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+  .local-addr { color: var(--ink); font-size: 1.05rem; line-height: 1.6; max-width: 60ch; }
+  .local-park {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    color: var(--navy); font-weight: 500; background: #fff;
+    border: 1px solid var(--line); border-radius: 12px; padding: 0.6rem 0.95rem; max-width: 60ch;
+  }
+  .btn-ghost-dark { background: transparent; color: var(--navy); border: 1px solid var(--line); margin-top: 0.4rem; }
+  .btn-ghost-dark:hover { border-color: var(--navy); background: #fff; }
+</style>

@@ -1,0 +1,97 @@
+---
+import { whatsappUrl, NAP } from '@/config/site';
+const wa = whatsappUrl('Estou navegando no site da Fourlink e gostaria de ajuda.');
+---
+
+<a class="ale-fab" href={wa} target="_blank" rel="noopener" aria-label="Falar com a Alessandra no WhatsApp">
+  <span class="ale-av">
+    <img src="/img/alessandra-real-480.webp" width="48" height="48" alt="Alessandra, atendimento 24h da Fourlink" loading="lazy" decoding="async" />
+    <span class="ale-dot" aria-hidden="true"></span>
+  </span>
+  <span class="ale-txt">
+    <strong>Falar com a Alessandra</strong>
+    <small>Atendimento 24h</small>
+  </span>
+</a>
+
+<style>
+  .ale-fab {
+    position: fixed;
+    right: clamp(0.9rem, 3vw, 1.6rem);
+    bottom: clamp(0.9rem, 3vw, 1.6rem);
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.5rem 1.1rem 0.5rem 0.5rem;
+    background: var(--navy);
+    color: #fff;
+    border-radius: 999px;
+    text-decoration: none;
+    box-shadow: 0 12px 30px -8px rgba(11, 21, 48, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .ale-fab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 38px -10px rgba(11, 21, 48, 0.6);
+  }
+  .ale-av {
+    position: relative;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+  }
+  .ale-av img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+  }
+  .ale-dot {
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #25d366;
+    border: 2px solid var(--navy);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6);
+    animation: alePulse 2.4s ease-out infinite;
+  }
+  .ale-txt {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+  .ale-txt strong {
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+  .ale-txt small {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    color: var(--copper-soft);
+    letter-spacing: 0.04em;
+  }
+
+  @keyframes alePulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.55); }
+    70% { box-shadow: 0 0 0 9px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ale-dot { animation: none; }
+  }
+
+  /* Em telas pequenas, colapsa para só o avatar (economiza espaço) */
+  @media (max-width: 560px) {
+    .ale-txt { display: none; }
+    .ale-fab { padding: 0.4rem; }
+  }
+</style>

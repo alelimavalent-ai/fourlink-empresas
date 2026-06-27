@@ -1,0 +1,364 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import BrandMark from '@/components/BrandMark.astro';
+import ServiceIcon from '@/components/ServiceIcon.astro';
+import CeoDestaque from '@/components/CeoDestaque.astro';
+import NossaEmpresa from '@/components/NossaEmpresa.astro';
+import SegmentosHome from '@/components/SegmentosHome.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import CalculadoraSecao from '@/components/CalculadoraSecao.astro';
+import FaqList from '@/components/FaqList.astro';
+import { SITE, SERVICES, NAP, FOUNDER, ECONOMY_SHORT, whatsappUrl } from '@/config/site';
+import { getCollection } from 'astro:content';
+import { faqSchema } from '@/lib/schema';
+
+const faqEntries = (await getCollection('faqs')).sort((a, b) => a.data.order - b.data.order);
+const faqs = faqEntries.map((f) => ({ q: f.data.q, a: f.data.a }));
+
+const description =
+  'A Fourlink Empresas é especialista em telefonia corporativa e internet empresarial no RJ, MG e ES. ' +
+  'Reduza custos de telefonia em ' + ECONOMY_SHORT + '. Atendimento 24h.';
+
+const stats = [
+  { n: '28+', l: 'anos de experiência em telecom' },
+  { n: '24h', l: 'atendimento, todos os dias' },
+  { n: '3', l: 'estados atendidos (RJ · MG · ES)' },
+  { n: 'até 30%', l: 'de potencial de economia*' },
+];
+---
+
+<BaseLayout title={`${SITE.name} | Telefonia Corporativa e Internet Empresarial`} description={description} schemas={[faqSchema(faqs)].filter(Boolean) as object[]}>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="mark-wrap">
+        <BrandMark size={520} variant="gradient" class="hero-mark" />
+      </div>
+    </div>
+    <div class="container hero-inner">
+      <span class="eyebrow on-dark">{SITE.tagline}</span>
+      <h1>
+        Sua empresa paga mais do que precisa em <span class="hl">telefonia</span>.
+      </h1>
+      <p class="hero-sub">
+        A Fourlink analisa a sua fatura, dimensiona suas linhas e leva internet empresarial estável —
+        com potencial de economia de <strong class="mono">até 30%</strong>, dependendo da análise personalizada
+        da fatura e do perfil da empresa.
+      </p>
+      <div class="hero-cta">
+        <a href="/calculadora-de-economia" class="btn btn-primary">Calcular minha economia</a>
+        <a href={whatsappUrl()} class="btn btn-on-dark" target="_blank" rel="noopener">Falar com a Alessandra</a>
+      </div>
+      <ul class="hero-stats">
+        {stats.map((s) => (
+          <li><strong class="mono">{s.n}</strong><span>{s.l}</span></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- SERVIÇOS -->
+  <section class="section services">
+    <div class="container">
+      <div class="sec-head">
+        <span class="eyebrow">O que fazemos</span>
+        <h2>Soluções corporativas de telefonia e internet</h2>
+        <p class="lead">Tudo o que a sua empresa precisa para se comunicar bem e gastar menos — com gestão e atendimento dedicados.</p>
+      </div>
+      <ul class="svc-grid">
+        {SERVICES.map((s) => (
+          <li>
+            <a href={`/servicos/${s.slug}`} class="svc-card">
+              <span class="svc-ic"><ServiceIcon name={s.icon} size={24} /></span>
+              <h3>{s.title}</h3>
+              <p>{s.short}</p>
+              <span class="svc-go">Saiba mais →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- DIFERENCIAIS -->
+  <section class="section why">
+    <div class="container why-grid">
+      <div class="why-text">
+        <span class="eyebrow">Por que a Fourlink</span>
+        <h2>Não vendemos plano. Resolvemos custo.</h2>
+        <p class="lead">
+          A maioria das empresas paga por franquias que não usa e mantém linhas que deveriam ter sido canceladas.
+          Nosso trabalho começa lendo a sua fatura — e termina com uma estrutura enxuta, sob controle e sob medida.
+        </p>
+        <ul class="why-list">
+          <li><b>Diagnóstico real:</b> analisamos linha por linha antes de propor qualquer coisa.</li>
+          <li><b>Sem desperdício:</b> voz e dados dimensionados pelo consumo de cada perfil.</li>
+          <li><b>Gestão contínua:</b> acompanhamos o consumo para o custo não voltar a crescer.</li>
+          <li><b>Atendimento 24h:</b> a Alessandra e o time respondem todos os dias.</li>
+        </ul>
+        <a href="/sobre" class="btn btn-ghost">Conheça a Fourlink</a>
+      </div>
+      <aside class="why-card">
+        <p class="founder-q">“Telefonia bem gerida deixa de ser uma conta e vira vantagem competitiva.”</p>
+        <div class="founder">
+          <img class="founder-avatar" src="/img/ceo-valentim-480.webp" width="56" height="56" alt={`${FOUNDER.name}, ${FOUNDER.role}`} loading="lazy" decoding="async" />
+          <div>
+            <strong>{FOUNDER.name}</strong>
+            <span>{FOUNDER.role}</span>
+            <span class="mono">{FOUNDER.experienceYears}+ anos em telecom</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CeoDestaque />
+
+  <SegmentosHome />
+
+  <CalculadoraSecao />
+
+  <NossaEmpresa />
+
+  <FaqList faqs={faqs} />
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  /* HERO */
+  .hero {
+    position: relative;
+    background: var(--grad-soft);
+    color: #fff;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+  .mark-wrap {
+    position: absolute;
+    right: -120px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.13;
+  }
+  .hero-mark {
+    animation: floaty 9s ease-in-out infinite;
+  }
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-14px) rotate(2deg); }
+  }
+  .hero-inner {
+    padding-block: clamp(4rem, 11vw, 8rem);
+    position: relative;
+    max-width: 880px;
+  }
+  .eyebrow.on-dark {
+    color: var(--pink-soft);
+  }
+  .hero h1 {
+    font-size: var(--step-4);
+    color: #fff;
+    margin: 1rem 0 1.2rem;
+    max-width: 16ch;
+  }
+  .hero h1 .hl {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-sub {
+    font-size: var(--step-1);
+    color: #c6d1ea;
+    max-width: 60ch;
+    line-height: 1.55;
+  }
+  .hero-sub strong {
+    color: var(--pink-soft);
+  }
+  .hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin: 2rem 0 2.6rem;
+  }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: 1.4rem 2.6rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    padding-top: 1.8rem;
+  }
+  .hero-stats li {
+    display: flex;
+    flex-direction: column;
+  }
+  .hero-stats strong {
+    font-size: 1.7rem;
+    color: #fff;
+    font-weight: 500;
+  }
+  .hero-stats span {
+    font-size: 0.82rem;
+    color: #9fb0d2;
+    max-width: 18ch;
+  }
+
+  /* SEC HEAD */
+  .sec-head {
+    max-width: 640px;
+    margin-bottom: 2.8rem;
+  }
+  .sec-head h2 {
+    font-size: var(--step-3);
+    margin: 0.6rem 0 0.7rem;
+  }
+
+  /* SERVICES */
+  .svc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem;
+  }
+  .svc-card {
+    display: block;
+    height: 100%;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 1.6rem;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  }
+  .svc-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: #d6deef;
+  }
+  .svc-ic {
+    display: inline-flex;
+    padding: 0.7rem;
+    border-radius: 12px;
+    background: var(--mist);
+    color: var(--pink);
+    margin-bottom: 1rem;
+  }
+  .svc-card h3 {
+    font-size: 1.16rem;
+    margin-bottom: 0.4rem;
+  }
+  .svc-card p {
+    color: var(--muted);
+    font-size: 0.94rem;
+    margin-bottom: 1rem;
+  }
+  .svc-go {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--navy);
+  }
+  .svc-card:hover .svc-go {
+    color: var(--pink);
+  }
+
+  /* WHY */
+  .why {
+    background: var(--mist);
+  }
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  .why-text h2 {
+    font-size: var(--step-3);
+    margin: 0.6rem 0 0.9rem;
+  }
+  .why-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin: 1.6rem 0 2rem;
+  }
+  .why-list li {
+    position: relative;
+    padding-left: 1.8rem;
+    color: var(--ink);
+  }
+  .why-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--grad);
+  }
+  .why-list b {
+    color: var(--navy);
+  }
+  .why-card {
+    background: var(--grad-soft);
+    color: #fff;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+  }
+  .founder-q {
+    font-family: var(--font-display);
+    font-size: 1.32rem;
+    line-height: 1.35;
+    font-weight: 500;
+    margin-bottom: 1.6rem;
+    text-wrap: balance;
+  }
+  .founder {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    padding-top: 1.3rem;
+  }
+  .founder-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    object-fit: cover;
+    object-position: center 20%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    flex-shrink: 0;
+  }
+  .founder div {
+    display: flex;
+    flex-direction: column;
+  }
+  .founder strong {
+    color: #fff;
+  }
+  .founder span {
+    font-size: 0.82rem;
+    color: #aebbd8;
+  }
+  .founder .mono {
+    color: var(--pink-soft);
+    font-size: 0.78rem;
+  }
+
+  @media (max-width: 860px) {
+    .hero-stats {
+      grid-template-columns: 1fr 1fr;
+    }
+    .why-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

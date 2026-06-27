@@ -1,0 +1,182 @@
+---
+import '@/styles/global.css';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import AlessandraFab from '@/components/AlessandraFab.astro';
+import { SITE, NAP, FOUNDER } from '@/config/site';
+
+interface Crumb {
+  name: string;
+  href: string;
+}
+interface Props {
+  title: string;
+  description: string;
+  /** Caminho canônico, ex.: "/servicos/chips-corporativos". Default = rota atual. */
+  path?: string;
+  ogType?: 'website' | 'article';
+  breadcrumbs?: Crumb[];
+  /** Schemas JSON-LD adicionais específicos da página. */
+  schemas?: object[];
+  noindex?: boolean;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description,
+  path,
+  ogType = 'website',
+  breadcrumbs = [],
+  schemas = [],
+  noindex = false,
+  ogImage = '/og/fourlink-og.jpg',
+} = Astro.props;
+
+// Canonical sempre absoluto e sem barra final (evita conteúdo duplicado).
+const rawPath = path ?? Astro.url.pathname;
+const cleanPath = rawPath !== '/' ? rawPath.replace(/\/$/, '') : '/';
+const canonical = new URL(cleanPath, SITE.domain).href;
+const ogImageAbs = new URL(ogImage, SITE.domain).href;
+const fullTitle = title.includes(SITE.name) ? title : `${title} | ${SITE.name}`;
+
+const addr = NAP.address;
+
+/* ---------- JSON-LD permanentes (em todas as páginas) ---------- */
+const organizationLd = {
+  '@type': 'Organization',
+  '@id': `${SITE.domain}/#organization`,
+  name: SITE.name,
+  url: SITE.domain,
+  description: SITE.description,
+  email: NAP.email,
+  telephone: NAP.phoneE164,
+  sameAs: [SITE.instagram],
+  areaServed: NAP.areasServed.map((n) => ({ '@type': 'State', name: n })),
+  founder: {
+    '@type': 'Person',
+    name: FOUNDER.name,
+    jobTitle: FOUNDER.role,
+    description: FOUNDER.bio,
+    ...(FOUNDER.sameAs.length ? { sameAs: FOUNDER.sameAs } : {}),
+  },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: `${addr.street}, ${addr.unit}`,
+    addressLocality: addr.city,
+    addressRegion: addr.state,
+    postalCode: addr.postalCode,
+    addressCountry: addr.country,
+  },
+};
+
+const localBusinessLd = {
+  '@type': 'ProfessionalService',
+  '@id': `${SITE.domain}/#localbusiness`,
+  name: SITE.name,
+  image: [ogImageAbs, new URL('/img/salao-atendimento-1080.webp', SITE.domain).href, new URL('/img/ceo-valentim-880.webp', SITE.domain).href],
+  url: SITE.domain,
+  telephone: NAP.phoneE164,
+  email: NAP.email,
+  priceRange: '$$',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: `${addr.venue}, ${addr.street}, ${addr.unit}`,
+    addressLocality: addr.city,
+    addressRegion: addr.state,
+    postalCode: addr.postalCode,
+    addressCountry: addr.country,
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: NAP.geo.lat, longitude: NAP.geo.lng },
+  openingHoursSpecification: {
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    opens: '00:00',
+    closes: '23:59',
+  },
+  areaServed: NAP.areasServed,
+  sameAs: [SITE.instagram],
+  parentOrganization: { '@id': `${SITE.domain}/#organization` },
+};
+
+const websiteLd = {
+  '@type': 'WebSite',
+  '@id': `${SITE.domain}/#website`,
+  url: SITE.domain,
+  name: SITE.name,
+  inLanguage: SITE.locale,
+  publisher: { '@id': `${SITE.domain}/#organization` },
+};
+
+const breadcrumbLd =
+  breadcrumbs.length > 0
+    ? {
+        '@type': 'BreadcrumbList',
+        itemListElement: breadcrumbs.map((c, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: c.name,
+          item: new URL(c.href, SITE.domain).href,
+        })),
+      }
+    : null;
+
+const graph = {
+  '@context': 'https://schema.org',
+  '@graph': [organizationLd, localBusinessLd, websiteLd, ...(breadcrumbLd ? [breadcrumbLd] : []), ...schemas],
+};
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {!noindex && <meta name="robots" content="index, follow, max-image-preview:large" />}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageAbs} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageAbs} />
+
+    <!-- Tema / ícones -->
+    <meta name="theme-color" content="#1b2f5e" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Fontes (no piloto via Google Fonts; em produção, auto-hospedar e fazer subset) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+    />
+
+    <!-- JSON-LD (Organization + LocalBusiness + WebSite + Breadcrumb + página) -->
+    <script type="application/ld+json" set:html={JSON.stringify(graph)} />
+  </head>
+  <body>
+    <a href="#conteudo" class="skip-link">Pular para o conteúdo</a>
+    <Header />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Footer />
+    <AlessandraFab />
+  </body>
+</html>

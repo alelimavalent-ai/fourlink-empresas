@@ -1,0 +1,221 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import FaqList from '@/components/FaqList.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import CalculadoraSecao from '@/components/CalculadoraSecao.astro';
+import { getCollection } from 'astro:content';
+import { citySchema, faqSchema } from '@/lib/schema';
+import { SERVICES, NAP } from '@/config/site';
+
+export async function getStaticPaths() {
+  const cidades = await getCollection('cidades');
+  return cidades.map((entry) => ({
+    params: { uf: entry.data.uf, cidade: entry.data.customSlug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await entry.render();
+const path = `/atendimento/${data.uf}/${data.customSlug}`;
+
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Atendimento', href: '/atendimento' },
+  { name: data.ufNome, href: `/atendimento/${data.uf}` },
+  { name: data.cidade, href: path },
+];
+const schemas = [
+  citySchema({ cidade: data.cidade, uf: data.uf, description: data.description, path }),
+  faqSchema(data.faqs),
+].filter(Boolean) as object[];
+---
+
+<BaseLayout
+  title={data.seoTitle ?? `${data.cidade} — Telefonia Corporativa | Fourlink`}
+  description={data.description}
+  path={path}
+  breadcrumbs={breadcrumbs}
+  schemas={schemas}
+>
+  <header class="city-hero">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Início</a><span>/</span><a href="/atendimento">Atendimento</a><span>/</span>
+        <a href={`/atendimento/${data.uf}`}>{data.ufNome}</a><span>/</span><b>{data.cidade}</b>
+      </nav>
+      <span class="loc mono">📍 {data.cidade} · {data.ufNome}</span>
+      <h1>Telefonia corporativa e internet empresarial em {data.cidade}</h1>
+      <p class="intro">{data.intro}</p>
+      <div class="hero-cta">
+        <a href="/calculadora-de-economia" class="btn btn-primary">Calcular economia em {data.cidade}</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="city-meta">
+    <div class="container city-meta-grid">
+      <div>
+        <h2 class="mh">Perfil econômico de {data.cidade}</h2>
+        <p>{data.economicProfile}</p>
+        <p class="angle">{data.localAngle}</p>
+      </div>
+      <aside class="bairros-card">
+        <h3>Onde atendemos em {data.cidade}</h3>
+        <ul class="bairros">
+          {data.bairros.map((b) => <li>{b}</li>)}
+        </ul>
+        {data.populacao && <p class="pop mono">População: {data.populacao}</p>}
+      </aside>
+    </div>
+  </section>
+
+  <section class="prose-sec">
+    <div class="container prose">
+      <Content />
+    </div>
+  </section>
+
+  <section class="city-svc">
+    <div class="container">
+      <h2 class="mh">Serviços Fourlink em {data.cidade}</h2>
+      <ul class="city-svc-grid">
+        {SERVICES.map((s) => (
+          <li><a href={`/servicos/${s.slug}`}>{s.title}</a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <FaqList faqs={data.faqs} title={`Dúvidas — Fourlink em ${data.cidade}`} />
+
+  <CalculadoraSecao heading={`Quanto a sua empresa em ${data.cidade} pode economizar?`} />
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .city-hero {
+    background: var(--grad-soft);
+    color: #fff;
+    padding-block: clamp(2.5rem, 7vw, 4.5rem);
+  }
+  .crumbs {
+    font-size: 0.8rem;
+    color: #9fb0d2;
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    margin-bottom: 1.4rem;
+    flex-wrap: wrap;
+  }
+  .crumbs a:hover { color: #fff; }
+  .crumbs b { color: #fff; font-weight: 500; }
+  .loc {
+    color: var(--pink-soft);
+    font-size: 0.85rem;
+  }
+  .city-hero h1 {
+    color: #fff;
+    font-size: var(--step-3);
+    margin: 0.7rem 0 1rem;
+    max-width: 22ch;
+  }
+  .intro {
+    color: #c6d1ea;
+    max-width: 64ch;
+    font-size: var(--step-1);
+    line-height: 1.55;
+  }
+  .hero-cta { margin-top: 1.8rem; }
+
+  .city-meta {
+    padding-block: clamp(3rem, 7vw, 5rem);
+  }
+  .city-meta-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  .mh {
+    font-size: var(--step-2);
+    margin-bottom: 1rem;
+  }
+  .city-meta p {
+    color: #2c3650;
+    margin-bottom: 1rem;
+    max-width: 60ch;
+  }
+  .angle {
+    color: var(--muted);
+  }
+  .bairros-card {
+    background: var(--mist);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 1.6rem;
+  }
+  .bairros-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+  }
+  .bairros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .bairros li {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.85rem;
+    color: var(--navy);
+    font-weight: 500;
+  }
+  .pop {
+    margin-top: 1.2rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .prose-sec {
+    background: var(--mist);
+    padding-block: clamp(3rem, 7vw, 5rem);
+  }
+  .prose {
+    max-width: 760px;
+  }
+  .prose :global(h2) { font-size: var(--step-2); margin: 2rem 0 0.9rem; }
+  .prose :global(h3) { font-size: var(--step-1); margin: 1.5rem 0 0.6rem; color: var(--navy); }
+  .prose :global(p) { margin-bottom: 1.1rem; color: #2c3650; }
+  .prose :global(ul) { margin: 0 0 1.2rem 1.2rem; list-style: disc; display: flex; flex-direction: column; gap: 0.5rem; }
+  .city-svc {
+    padding-block: clamp(3rem, 6vw, 4.5rem);
+  }
+  .city-svc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.8rem;
+    margin-top: 1.4rem;
+  }
+  .city-svc-grid a {
+    display: block;
+    padding: 1rem 1.2rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--navy);
+    transition: border-color 0.18s, color 0.18s;
+  }
+  .city-svc-grid a:hover {
+    border-color: var(--pink);
+    color: var(--pink);
+  }
+  @media (max-width: 820px) {
+    .city-meta-grid { grid-template-columns: 1fr; }
+  }
+</style>

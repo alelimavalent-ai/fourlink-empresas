@@ -1,0 +1,173 @@
+---
+// Galeria "Nossa Empresa" — somente fotos reais da operação (25.7).
+const scenes = [
+  { img: 'alessandra-real', alt: 'Atendimento e relacionamento 24h na Fourlink', label: 'Atendimento 24h' },
+  { img: 'lene-atendimento', alt: 'Lene Silva, diretora da Fourlink, no ambiente de atendimento', label: 'Diretoria no atendimento' },
+  { img: 'tayna', alt: 'Atendimento comercial B2B da Fourlink', label: 'Comercial B2B' },
+  { img: 'carla', alt: 'Suporte de internet fibra da Fourlink', label: 'Suporte de fibra' },
+];
+---
+
+<section class="empresa section">
+  <div class="container">
+    <span class="eyebrow">Nossa empresa</span>
+    <h2>Conheça a Fourlink por dentro</h2>
+    <p class="lead emp-intro">
+      Um espaço real, no Rio de Janeiro, onde cada fatura é analisada e cada empresa cliente é
+      acompanhada de perto — do primeiro contato à gestão contínua das linhas.
+    </p>
+
+    <figure class="emp-hero">
+      <img
+        src="/img/salao-atendimento-1080.webp"
+        srcset="/img/salao-atendimento-720.webp 720w, /img/salao-atendimento-1080.webp 1080w"
+        sizes="(max-width: 1120px) 100vw, 1080px"
+        width="1080"
+        height="787"
+        alt="Salão de vendas e atendimento da Fourlink Empresas, no Rio de Janeiro"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption><span>Salão de vendas e atendimento</span> · Rio de Janeiro</figcaption>
+    </figure>
+
+    <figure class="emp-feature">
+      <img
+        src="/img/atendimento-cliente-848.webp"
+        srcset="/img/atendimento-cliente-560.webp 560w, /img/atendimento-cliente-848.webp 848w"
+        sizes="(max-width: 760px) 100vw, 700px"
+        width="848"
+        height="865"
+        alt="Atendimento ao cliente no escritório da Fourlink, com vista para o Rio de Janeiro"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>Atendimento ao cliente — escritório com vista para o Rio</figcaption>
+    </figure>
+
+    <div class="emp-row">
+      {
+        scenes.map((s) => (
+          <figure class="emp-tile">
+            <img
+              src={`/img/${s.img}-800.webp`}
+              srcset={`/img/${s.img}-480.webp 480w, /img/${s.img}-800.webp 800w`}
+              sizes="(max-width: 760px) 100vw, 340px"
+              width="800"
+              height="1000"
+              alt={s.alt}
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>{s.label}</figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .empresa h2 {
+    font-size: var(--step-2);
+    margin: 0.6rem 0 0.8rem;
+    max-width: 18ch;
+  }
+  .emp-intro {
+    max-width: 62ch;
+    margin-bottom: 2.4rem;
+  }
+  .emp-hero {
+    margin: 0 0 1.4rem;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-md);
+  }
+  .emp-hero img {
+    width: 100%;
+    height: clamp(260px, 42vw, 460px);
+    object-fit: cover;
+    object-position: center 38%;
+    display: block;
+  }
+  .emp-hero figcaption {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 1.6rem 1.4rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: #fff;
+    background: linear-gradient(transparent, rgba(11, 21, 48, 0.78));
+  }
+  .emp-hero figcaption span {
+    color: var(--copper-soft);
+  }
+  .emp-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(1rem, 2.5vw, 1.4rem);
+  }
+  .emp-feature {
+    margin: 0 auto 1.6rem;
+    max-width: 700px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-md);
+    background: #fff;
+  }
+  .emp-feature img { width: 100%; height: auto; display: block; }
+  .emp-feature figcaption {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--muted);
+    padding: 0.8rem 1.1rem;
+    background: #fff;
+    border-top: 1px solid var(--line);
+  }
+  .emp-tile {
+    margin: 0;
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+  }
+  .emp-tile img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .emp-tile:hover img {
+    transform: scale(1.04);
+  }
+  .emp-tile figcaption {
+    position: absolute;
+    left: 0.9rem;
+    bottom: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: #fff;
+    background: rgba(11, 21, 48, 0.66);
+    backdrop-filter: blur(6px);
+    border-radius: 99px;
+    padding: 0.35rem 0.8rem;
+  }
+
+  @media (max-width: 760px) {
+    .emp-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 460px) {
+    .emp-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

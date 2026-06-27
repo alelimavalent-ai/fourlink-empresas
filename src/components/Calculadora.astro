@@ -1,0 +1,400 @@
+---
+import { NAP, WHATSAPP_GREETING, CALC_STATEMENT } from '@/config/site';
+
+// Endpoint do CRM Fourlink (futuramente integrado à IA Alessandra/Valentina).
+// Vazio = envia somente via WhatsApp. Em produção, aponte para o CRM:
+//   ex.: 'https://crm.fourlinkempresas.com/api/leads'
+const CRM_ENDPOINT = '';
+---
+
+<div class="calc" data-calc>
+  <!-- Cabeçalho: progresso -->
+  <div class="calc-head">
+    <div class="calc-prog"><span data-bar style="width:14%"></span></div>
+    <p class="calc-count mono"><span data-step-num>1</span><span class="sep">/</span>7</p>
+  </div>
+
+  <form data-form novalidate>
+    <div class="stage">
+      <!-- 1. Linhas -->
+      <fieldset class="step enter" data-step="1" data-name="linhas">
+        <span class="q-kicker mono">Diagnóstico</span>
+        <legend>Quantas linhas a sua empresa tem hoje?</legend>
+        <p class="hint">Some celulares corporativos, modems e chips de dados.</p>
+        <div class="opts opts-2">
+          <button type="button" class="opt" data-value="1 a 3"><b>1 a 3</b><span>linhas</span></button>
+          <button type="button" class="opt" data-value="4 a 10"><b>4 a 10</b><span>linhas</span></button>
+          <button type="button" class="opt" data-value="11 a 30"><b>11 a 30</b><span>linhas</span></button>
+          <button type="button" class="opt" data-value="Mais de 30"><b>Mais de 30</b><span>linhas</span></button>
+        </div>
+      </fieldset>
+
+      <!-- 2. Conta -->
+      <fieldset class="step" data-step="2" data-name="conta" hidden>
+        <span class="q-kicker mono">Diagnóstico</span>
+        <legend>Quanto a empresa investe por mês em telefonia?</legend>
+        <p class="hint">Valor aproximado da fatura mensal somando todas as linhas.</p>
+        <div class="opts opts-2">
+          <button type="button" class="opt" data-value="Até R$ 500"><b>Até R$ 500</b></button>
+          <button type="button" class="opt" data-value="R$ 500 a R$ 2.000"><b>R$ 500 a 2.000</b></button>
+          <button type="button" class="opt" data-value="R$ 2.000 a R$ 5.000"><b>R$ 2.000 a 5.000</b></button>
+          <button type="button" class="opt" data-value="Acima de R$ 5.000"><b>Acima de R$ 5.000</b></button>
+        </div>
+        <div class="nav"><button type="button" class="link-back" data-back>← Voltar</button></div>
+      </fieldset>
+
+      <!-- 3. Estado -->
+      <fieldset class="step" data-step="3" data-name="estado" hidden>
+        <span class="q-kicker mono">Localização</span>
+        <legend>Onde fica a sua empresa?</legend>
+        <p class="hint">Atendemos Rio de Janeiro, Minas Gerais e Espírito Santo.</p>
+        <div class="opts opts-3">
+          <button type="button" class="opt" data-value="RJ"><b>RJ</b><span>Rio de Janeiro</span></button>
+          <button type="button" class="opt" data-value="MG"><b>MG</b><span>Minas Gerais</span></button>
+          <button type="button" class="opt" data-value="ES"><b>ES</b><span>Espírito Santo</span></button>
+        </div>
+        <div class="nav"><button type="button" class="link-back" data-back>← Voltar</button></div>
+      </fieldset>
+
+      <!-- 4. Cidade -->
+      <fieldset class="step" data-step="4" data-name="cidade" hidden>
+        <span class="q-kicker mono">Localização</span>
+        <legend>Em qual cidade?</legend>
+        <p class="hint">Para encaminharmos ao atendimento da sua região.</p>
+        <input type="text" name="cidade" placeholder="Ex.: Niterói" autocomplete="address-level2" />
+        <div class="nav">
+          <button type="button" class="link-back" data-back>← Voltar</button>
+          <button type="button" class="btn btn-primary btn-go" data-next>Continuar</button>
+        </div>
+      </fieldset>
+
+      <!-- 5. CNPJ -->
+      <fieldset class="step" data-step="5" data-name="cnpj" hidden>
+        <span class="q-kicker mono">Perfil</span>
+        <legend>A sua empresa tem CNPJ?</legend>
+        <p class="hint">Planos corporativos exigem CNPJ (inclui MEI).</p>
+        <div class="opts opts-2 opts-bin">
+          <button type="button" class="opt" data-value="Sim"><b>Sim</b></button>
+          <button type="button" class="opt" data-value="Não"><b>Não</b></button>
+        </div>
+        <div class="nav"><button type="button" class="link-back" data-back>← Voltar</button></div>
+      </fieldset>
+
+      <!-- 6. Portabilidade -->
+      <fieldset class="step" data-step="6" data-name="portabilidade" hidden>
+        <span class="q-kicker mono">Perfil</span>
+        <legend>Deseja manter os números (portabilidade)?</legend>
+        <p class="hint">Você troca de condições sem perder os números da empresa.</p>
+        <div class="opts opts-2 opts-bin">
+          <button type="button" class="opt" data-value="Sim"><b>Sim</b></button>
+          <button type="button" class="opt" data-value="Não"><b>Não</b></button>
+        </div>
+        <div class="nav"><button type="button" class="link-back" data-back>← Voltar</button></div>
+      </fieldset>
+
+      <!-- 7. Fibra -->
+      <fieldset class="step" data-step="7" data-name="fibra" hidden>
+        <span class="q-kicker mono">Perfil</span>
+        <legend>Também precisa de internet fibra?</legend>
+        <p class="hint">Unir telefonia e internet costuma reduzir o custo total.</p>
+        <div class="opts opts-2 opts-bin">
+          <button type="button" class="opt" data-value="Sim"><b>Sim</b></button>
+          <button type="button" class="opt" data-value="Não"><b>Não</b></button>
+        </div>
+        <div class="nav"><button type="button" class="link-back" data-back>← Voltar</button></div>
+      </fieldset>
+
+      <!-- Resultado -->
+      <fieldset class="step result" data-step="result" hidden>
+        <div class="result-top">
+          <span class="q-kicker mono">Seu diagnóstico</span>
+          <h3 data-result-title>Potencial de economia</h3>
+        </div>
+
+        <!-- Velocímetro -->
+        <div class="gauge" role="img" aria-label="Velocímetro de potencial de economia" data-gauge-label>
+          <svg viewBox="0 0 200 132" width="100%" height="100%" aria-hidden="true">
+            <g fill="none" stroke-width="15" stroke-linecap="round">
+              <path d="M20 100 A80 80 0 0 1 43.43 43.43" stroke="#5b8def" />
+              <path d="M43.43 43.43 A80 80 0 0 1 100 20" stroke="#23b893" />
+              <path d="M100 20 A80 80 0 0 1 156.57 43.43" stroke="#ffab2e" />
+              <path d="M156.57 43.43 A80 80 0 0 1 180 100" stroke="#c8311a" />
+            </g>
+            <g class="needle" data-needle>
+              <line x1="100" y1="100" x2="100" y2="34" stroke="#0b1530" stroke-width="4" stroke-linecap="round" />
+              <circle cx="100" cy="100" r="9" fill="#0b1530" />
+              <circle cx="100" cy="100" r="4" fill="#fff" />
+            </g>
+          </svg>
+          <div class="gauge-level">
+            <span class="lvl-dot" data-lvl-dot></span>
+            <span class="lvl-name" data-lvl-name>—</span>
+          </div>
+          <div class="gauge-scale mono"><span>Baixo</span><span>Moderado</span><span>Alto</span><span>Muito alto</span></div>
+        </div>
+
+        <p class="diag-desc" data-diag-desc></p>
+        <ul class="diag-list" data-diag-list></ul>
+
+        <p class="statement">{CALC_STATEMENT}</p>
+
+        <div class="capture">
+          <h4>Receba sua análise personalizada</h4>
+          <p class="hint">A Alessandra recebe seu diagnóstico e retorna com a proposta.</p>
+          <div class="fields">
+            <input type="text" name="nome" placeholder="Seu nome" autocomplete="name" required />
+            <input type="text" name="empresa" placeholder="Empresa" autocomplete="organization" required />
+            <input type="tel" name="whatsapp" placeholder="WhatsApp com DDD" autocomplete="tel" required />
+            <input type="email" name="email" placeholder="E-mail" autocomplete="email" required />
+          </div>
+          <button type="button" class="btn btn-primary btn-block" data-submit>Quero uma proposta personalizada</button>
+          <p class="privacy">Ao enviar, você concorda em ser contatado pela Fourlink Empresas sobre sua análise.</p>
+        </div>
+      </fieldset>
+    </div>
+  </form>
+</div>
+
+<script define:vars={{ whatsappDigits: NAP.whatsappDigits, greeting: WHATSAPP_GREETING, statement: CALC_STATEMENT, crmEndpoint: CRM_ENDPOINT }}>
+  const LINHAS = ['1 a 3', '4 a 10', '11 a 30', 'Mais de 30'];
+  const CONTA = ['Até R$ 500', 'R$ 500 a R$ 2.000', 'R$ 2.000 a R$ 5.000', 'Acima de R$ 5.000'];
+  const LEVELS = [
+    { nome: 'Baixo', cor: '#5b8def', ang: -67.5, desc: 'Mesmo assim, há ajustes possíveis para a sua empresa pagar só pelo que realmente usa.' },
+    { nome: 'Moderado', cor: '#23b893', ang: -22.5, desc: 'Há boas oportunidades de enxugar a sua fatura com dimensionamento e gestão das linhas.' },
+    { nome: 'Alto', cor: '#ffab2e', ang: 22.5, desc: 'O seu perfil indica forte potencial de redução com renegociação e portabilidade.' },
+    { nome: 'Muito Alto', cor: '#c8311a', ang: 67.5, desc: 'Seu cenário reúne vários fatores de economia — o potencial de redução é expressivo.' },
+  ];
+
+  document.querySelectorAll('[data-calc]').forEach((root) => {
+    const form = root.querySelector('[data-form]');
+    const steps = [...root.querySelectorAll('.step')];
+    const bar = root.querySelector('[data-bar]');
+    const stepNum = root.querySelector('[data-step-num]');
+    const order = ['1', '2', '3', '4', '5', '6', '7', 'result'];
+    const answers = {};
+    let idx = 0;
+
+    const show = (i) => {
+      idx = Math.max(0, Math.min(order.length - 1, i));
+      steps.forEach((s) => (s.hidden = s.dataset.step !== order[idx]));
+      const active = steps[idx];
+      active.classList.remove('enter');
+      void active.offsetWidth; // reflow para reiniciar a animação
+      active.classList.add('enter');
+      const pct = order[idx] === 'result' ? 100 : Math.round(((idx + 1) / 7) * 100);
+      if (bar) bar.style.width = pct + '%';
+      if (stepNum) stepNum.textContent = order[idx] === 'result' ? '7' : String(idx + 1);
+      try { root.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+      if (order[idx] === 'result') diagnose();
+      const firstInput = active.querySelector('input');
+      if (firstInput && order[idx] === 'cidade') setTimeout(() => firstInput.focus(), 350);
+    };
+
+    // Avanço automático nos passos de opção
+    root.querySelectorAll('.step .opt').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const fs = btn.closest('.step');
+        const name = fs.dataset.name;
+        fs.querySelectorAll('.opt').forEach((b) => b.classList.remove('sel'));
+        btn.classList.add('sel');
+        answers[name] = btn.dataset.value;
+        setTimeout(() => show(idx + 1), 240);
+      });
+    });
+
+    root.querySelectorAll('[data-back]').forEach((b) => b.addEventListener('click', () => show(idx - 1)));
+    root.querySelector('[data-next]')?.addEventListener('click', () => {
+      const cidade = form.cidade.value.trim();
+      if (!cidade) { form.cidade.focus(); form.cidade.classList.add('err'); return; }
+      answers.cidade = cidade;
+      show(idx + 1);
+    });
+    form.cidade?.addEventListener('input', () => form.cidade.classList.remove('err'));
+
+    function scoreOf(arr, val) { const i = arr.indexOf(val); return i < 0 ? 1 : i + 1; }
+
+    function diagnose() {
+      const base = scoreOf(LINHAS, answers.linhas) + scoreOf(CONTA, answers.conta);
+      const bonus = (answers.portabilidade === 'Sim' ? 1 : 0) + (answers.fibra === 'Sim' ? 1 : 0) + (answers.cnpj === 'Sim' ? 1 : 0);
+      const total = base + bonus;
+      let lvl = 0;
+      if (total >= 9) lvl = 3; else if (total >= 6) lvl = 2; else if (total >= 4) lvl = 1; else lvl = 0;
+      const L = LEVELS[lvl];
+
+      // Velocímetro
+      const needle = root.querySelector('[data-needle]');
+      if (needle) { needle.style.transform = 'rotate(' + L.ang + 'deg)'; }
+      const dot = root.querySelector('[data-lvl-dot]');
+      const lname = root.querySelector('[data-lvl-name]');
+      if (dot) dot.style.background = L.cor;
+      if (lname) { lname.textContent = L.nome; lname.style.color = L.cor; }
+      root.querySelector('[data-gauge-label]')?.setAttribute('aria-label', 'Potencial de economia: ' + L.nome);
+      const desc = root.querySelector('[data-diag-desc]');
+      if (desc) desc.textContent = L.desc;
+
+      // Diagnóstico personalizado
+      const ins = [];
+      if (answers.linhas === '11 a 30' || answers.linhas === 'Mais de 30')
+        ins.push('Com várias linhas ativas, há espaço para padronizar planos e eliminar franquias ociosas.');
+      else if (answers.linhas === '4 a 10')
+        ins.push('Dá para dimensionar voz e dados por perfil de uso e evitar desperdício.');
+      if (answers.conta === 'Acima de R$ 5.000' || answers.conta === 'R$ 2.000 a R$ 5.000')
+        ins.push('O volume da sua fatura indica boa margem para renegociação e enxugamento.');
+      if (answers.portabilidade === 'Sim')
+        ins.push('A portabilidade pode destravar condições corporativas mantendo todos os seus números.');
+      if (answers.fibra === 'Sim')
+        ins.push('Unir telefonia e internet em um só parceiro tende a reduzir o custo total.');
+      if (answers.cnpj === 'Sim')
+        ins.push('Como CNPJ, você acessa planos corporativos indisponíveis para pessoa física.');
+      while (ins.length < 2) ins.push('Uma análise da fatura revela onde a sua empresa pode pagar menos.');
+
+      const list = root.querySelector('[data-diag-list]');
+      if (list) list.innerHTML = ins.slice(0, 3).map((t) => '<li>' + t + '</li>').join('');
+      answers._nivel = L.nome;
+    }
+
+    root.querySelector('[data-submit]')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      const cap = root.querySelector('.capture');
+      for (const el of cap.querySelectorAll('[required]')) {
+        if (!el.value.trim()) { el.focus(); el.classList.add('err'); return; }
+      }
+      const d = Object.fromEntries(new FormData(form).entries());
+      const lead = {
+        source: 'calculadora-economia',
+        site: 'fourlinkempresas.com',
+        createdAt: new Date().toISOString(),
+        nome: d.nome, empresa: d.empresa, whatsapp: d.whatsapp, email: d.email,
+        linhas: answers.linhas, contaMensal: answers.conta,
+        estado: answers.estado, cidade: answers.cidade,
+        possuiCnpj: answers.cnpj, desejaPortabilidade: answers.portabilidade, precisaFibra: answers.fibra,
+        diagnostico: { nivelPotencial: answers._nivel },
+        // Reservado para a IA Alessandra/Valentina priorizar e atender o lead:
+        valentina: { intent: 'analise_economia', status: 'novo', nivel: answers._nivel },
+      };
+
+      // 1) Grava no CRM Fourlink (se configurado)
+      if (crmEndpoint) {
+        try {
+          btn.disabled = true; btn.textContent = 'Enviando...';
+          await fetch(crmEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(lead) });
+        } catch (err) { console.warn('CRM indisponível, seguindo via WhatsApp.', err); }
+      }
+
+      // 2) Abre o WhatsApp da Alessandra com todas as respostas
+      const resumo = [
+        'Empresa: ' + lead.empresa,
+        'Responsável: ' + lead.nome,
+        'Linhas: ' + lead.linhas,
+        'Conta atual: ' + lead.contaMensal,
+        'Local: ' + lead.cidade + '/' + lead.estado,
+        'CNPJ: ' + lead.possuiCnpj + ' | Portabilidade: ' + lead.desejaPortabilidade + ' | Fibra: ' + lead.precisaFibra,
+        'Potencial de economia: ' + lead.diagnostico.nivelPotencial,
+      ].join('\n');
+      window.location.href = 'https://wa.me/' + whatsappDigits + '?text=' + encodeURIComponent(greeting + '\n\n' + resumo);
+    });
+  });
+</script>
+
+<style>
+  .calc {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    box-shadow: 0 30px 60px -28px rgba(11, 21, 48, 0.4), 0 2px 8px rgba(11, 21, 48, 0.05);
+    padding: clamp(1.5rem, 4vw, 2.6rem);
+    max-width: 600px;
+    margin-inline: auto;
+  }
+  .calc-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+  .calc-prog { flex: 1; height: 6px; background: var(--mist-2); border-radius: 99px; overflow: hidden; }
+  .calc-prog span { display: block; height: 100%; background: var(--grad); border-radius: 99px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  .calc-count { font-size: 0.82rem; color: var(--muted); letter-spacing: 0.04em; }
+  .calc-count .sep { color: var(--muted-light); margin: 0 0.15rem; }
+
+  .stage { position: relative; }
+  fieldset { border: 0; padding: 0; margin: 0; }
+  .step[hidden] { display: none; }
+  .step.enter { animation: stepIn 0.42s cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes stepIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .q-kicker {
+    font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--pink); display: block; margin-bottom: 0.7rem;
+  }
+  legend {
+    font-family: var(--font-display); font-weight: 600; font-size: clamp(1.25rem, 3.5vw, 1.6rem);
+    color: var(--navy); line-height: 1.18; letter-spacing: -0.02em; margin-bottom: 0.4rem;
+  }
+  .hint { color: var(--muted); font-size: 0.92rem; margin-bottom: 1.4rem; }
+
+  .opts { display: grid; gap: 0.7rem; }
+  .opts-2 { grid-template-columns: 1fr 1fr; }
+  .opts-3 { grid-template-columns: repeat(3, 1fr); }
+  .opt {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 0.1rem;
+    text-align: left; padding: 1.05rem 1.2rem; border-radius: 16px;
+    border: 1.5px solid var(--line); background: #fff; cursor: pointer;
+    transition: border-color 0.18s, box-shadow 0.18s, transform 0.12s, background 0.18s;
+    font-family: var(--font-body);
+  }
+  .opt b { font-family: var(--font-display); font-size: 1.12rem; color: var(--ink); font-weight: 600; letter-spacing: -0.01em; }
+  .opt span { font-size: 0.8rem; color: var(--muted); }
+  .opt:hover { border-color: #c3cde6; transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+  .opt.sel { border-color: var(--pink); background: #fdf3f0; box-shadow: 0 0 0 3px rgba(200, 49, 26, 0.12); }
+  .opts-bin .opt { align-items: center; }
+  .opts-bin .opt b { font-size: 1.18rem; }
+
+  input[type='text'], input[type='tel'], input[type='email'] {
+    width: 100%; font-family: var(--font-body); font-size: 1.05rem;
+    padding: 0.95rem 1.1rem; border: 1.5px solid var(--line); border-radius: 14px;
+    background: #fff; color: var(--ink); transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  input:focus { outline: none; border-color: var(--pink); box-shadow: 0 0 0 3px rgba(200, 49, 26, 0.14); }
+  input.err { border-color: #e23b3b; box-shadow: 0 0 0 3px rgba(226, 59, 59, 0.12); }
+
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; margin-top: 1.6rem; }
+  .link-back { background: none; border: 0; color: var(--muted); font-family: var(--font-body); font-size: 0.9rem; cursor: pointer; padding: 0.5rem 0; }
+  .link-back:hover { color: var(--navy); }
+  .btn-go { margin-left: auto; padding: 0.8rem 1.6rem; }
+
+  /* Resultado */
+  .result-top { text-align: center; }
+  .result .result-top h3 { font-size: clamp(1.4rem, 4vw, 1.9rem); color: var(--navy); margin-top: 0.2rem; }
+  .gauge { max-width: 340px; margin: 1.4rem auto 0.4rem; }
+  .needle { transform: rotate(-90deg); transform-box: view-box; transform-origin: 100px 100px; transition: transform 1.1s cubic-bezier(0.34, 1.4, 0.5, 1); }
+  .gauge-level { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: -0.4rem; }
+  .lvl-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--muted-light); box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.04); }
+  .lvl-name { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; }
+  .gauge-scale { display: flex; justify-content: space-between; font-size: 0.62rem; color: var(--muted-light); margin-top: 0.6rem; letter-spacing: 0.02em; }
+  .diag-desc { text-align: center; color: var(--ink); max-width: 46ch; margin: 1rem auto 1.2rem; font-size: 1.02rem; line-height: 1.5; }
+  .diag-list { display: flex; flex-direction: column; gap: 0.55rem; margin: 0 auto 1.4rem; max-width: 460px; }
+  .diag-list li {
+    position: relative; padding: 0.7rem 0.9rem 0.7rem 2.2rem; background: var(--mist); border-radius: 12px;
+    font-size: 0.92rem; color: #2c3650;
+  }
+  .diag-list li::before {
+    content: '✓'; position: absolute; left: 0.85rem; top: 0.7rem; color: var(--pink); font-weight: 700;
+  }
+  .statement {
+    text-align: center; font-size: 0.95rem; color: var(--navy); font-weight: 500;
+    background: #fdf3f0; border: 1px solid #f3ccc2; border-radius: 14px; padding: 1rem 1.2rem;
+    max-width: 480px; margin: 0 auto 1.8rem;
+  }
+  .capture { border-top: 1px solid var(--line); padding-top: 1.6rem; }
+  .capture h4 { font-family: var(--font-display); font-size: 1.2rem; color: var(--navy); text-align: center; }
+  .capture .hint { text-align: center; }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin: 1.1rem 0; }
+  .btn-block { width: 100%; }
+  .privacy { font-size: 0.74rem; color: var(--muted-light); text-align: center; margin-top: 0.8rem; }
+
+  @media (max-width: 520px) {
+    .opts-3 { grid-template-columns: 1fr; }
+    .fields { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .step.enter { animation: none; }
+    .needle { transition: none; }
+    .calc-prog span { transition: none; }
+  }
+</style>

@@ -1,0 +1,100 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import { getCollection } from 'astro:content';
+import { NAP } from '@/config/site';
+
+const cidades = await getCollection('cidades');
+const ufNomes: Record<string, string> = { rj: 'Rio de Janeiro', mg: 'Minas Gerais', es: 'Espírito Santo' };
+const ufs = ['rj', 'mg', 'es'] as const;
+const byUf = (uf: string) => cidades.filter((c) => c.data.uf === uf).sort((a, b) => a.data.cidade.localeCompare(b.data.cidade));
+
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Atendimento', href: '/atendimento' },
+];
+---
+
+<BaseLayout
+  title="Áreas de Atendimento — RJ, MG e ES | Fourlink Empresas"
+  description="A Fourlink Empresas atende empresas no Rio de Janeiro, Minas Gerais e Espírito Santo com telefonia corporativa e internet empresarial. Veja as cidades atendidas."
+  path="/atendimento"
+  breadcrumbs={breadcrumbs}
+>
+  <header class="hub-hero">
+    <div class="container">
+      <span class="eyebrow on-dark">Onde atuamos</span>
+      <h1>Atendimento em três estados do Sudeste</h1>
+      <p>A Fourlink atende empresas no {NAP.areasServed.join(', ')} — com {NAP.hours.toLowerCase()}.</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container">
+      {ufs.map((uf) => (
+        <div class="uf-block">
+          <div class="uf-head">
+            <h2><a href={`/atendimento/${uf}`}>{ufNomes[uf]}</a></h2>
+            <span class="mono">{uf.toUpperCase()}</span>
+          </div>
+          {byUf(uf).length > 0 ? (
+            <ul class="city-list">
+              {byUf(uf).map((c) => (
+                <li><a href={`/atendimento/${uf}/${c.data.customSlug}`}>{c.data.cidade}</a></li>
+              ))}
+            </ul>
+          ) : (
+            <p class="soon">Novas cidades sendo publicadas. Fale com a Alessandra para atendimento imediato.</p>
+          )}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .hub-hero {
+    background: var(--grad-soft);
+    color: #fff;
+    padding-block: clamp(3rem, 8vw, 5rem);
+  }
+  .eyebrow.on-dark { color: var(--pink-soft); }
+  .hub-hero h1 { color: #fff; font-size: var(--step-3); margin: 1rem 0 0.8rem; max-width: 20ch; }
+  .hub-hero p { color: #c6d1ea; max-width: 56ch; font-size: var(--step-1); }
+  .uf-block {
+    padding: 1.6rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .uf-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    margin-bottom: 1.1rem;
+  }
+  .uf-head h2 { font-size: var(--step-2); }
+  .uf-head h2 a:hover { color: var(--pink); }
+  .uf-head .mono { color: var(--muted); font-size: 0.8rem; }
+  .city-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.6rem;
+  }
+  .city-list a {
+    display: block;
+    padding: 0.8rem 1rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-weight: 500;
+    color: var(--navy);
+    transition: border-color 0.18s, color 0.18s, transform 0.18s;
+  }
+  .city-list a:hover {
+    border-color: var(--pink);
+    color: var(--pink);
+    transform: translateX(3px);
+  }
+  .soon { color: var(--muted); }
+</style>

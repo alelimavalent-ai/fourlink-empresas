@@ -63,3 +63,22 @@ export function citySchema(opts: { cidade: string; uf: string; description: stri
     url: abs(opts.path),
   };
 }
+
+/** QAPage — para páginas de pergunta única (formato citável por IAs). */
+export function qaSchema(opts: { question: string; answer: string; path: string }) {
+  return {
+    '@type': 'QAPage',
+    '@id': `${SITE.domain}${opts.path}#qa`,
+    inLanguage: SITE.locale,
+    mainEntity: {
+      '@type': 'Question',
+      name: opts.question,
+      answerCount: 1,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: opts.answer,
+        author: { '@type': 'Organization', name: SITE.name, ...ORG_REF },
+      },
+    },
+  };
+}

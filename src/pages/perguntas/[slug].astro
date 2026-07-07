@@ -1,0 +1,140 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CtaBand from '@/components/CtaBand.astro';
+import ServiceIcon from '@/components/ServiceIcon.astro';
+import { getCollection } from 'astro:content';
+import { qaSchema } from '@/lib/schema';
+import { SERVICES, whatsappUrl } from '@/config/site';
+
+export async function getStaticPaths() {
+  const perguntas = await getCollection('perguntas');
+  return perguntas.map((entry) => ({ params: { slug: entry.data.customSlug }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await entry.render();
+const path = `/perguntas/${data.customSlug}`;
+const wa = whatsappUrl(`Vi a pergunta "${data.pergunta}" no site e quero falar com a Fourlink.`);
+
+const todas = await getCollection('perguntas');
+const relacionadas = data.perguntasRelacionadas
+  .map((s) => todas.find((p) => p.data.customSlug === s))
+  .filter(Boolean);
+const servicos = data.servicosRelacionados
+  .map((s) => SERVICES.find((x) => x.slug === s))
+  .filter(Boolean);
+
+const breadcrumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Perguntas', href: '/perguntas' },
+  { name: data.pergunta, href: path },
+];
+const schemas = [qaSchema({ question: data.pergunta, answer: data.respostaCurta, path })];
+---
+
+<BaseLayout
+  title={data.seoTitle ?? `${data.pergunta} | Fourlink Empresas`}
+  description={data.respostaCurta}
+  path={path}
+  breadcrumbs={breadcrumbs}
+  schemas={schemas}
+>
+  <article class="perg">
+    <div class="container perg-wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Início</a><span>/</span><a href="/perguntas">Perguntas</a><span>/</span><b>{data.categoria}</b>
+      </nav>
+
+      <h1>{data.pergunta}</h1>
+      <p class="rtime mono">⏱ {data.readingMinutes} min de leitura</p>
+
+      <div class="resposta-direta">
+        <span class="rd-label">Resposta direta</span>
+        <p>{data.respostaCurta}</p>
+      </div>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <aside class="fourlink-promessa">
+        <strong>O jeito Fourlink de atender</strong>
+        <p>Aqui o cliente não fica preso em central telefônica nem em menu de espera. A gente
+        resolve: um atendimento próximo, consultivo e humano, do primeiro contato à gestão das
+        suas linhas. Ser Fourlink é ter quem resolve o problema por você.</p>
+        <a href={wa} class="btn btn-primary" target="_blank" rel="noopener">Falar com a Alessandra</a>
+      </aside>
+
+      {servicos.length > 0 && (
+        <section class="rel-svc">
+          <h2>Serviços relacionados</h2>
+          <ul>
+            {servicos.map((s) => (
+              <li>
+                <a href={`/servicos/${s!.slug}`}>
+                  <span class="ic"><ServiceIcon name={s!.icon} size={20} /></span>
+                  <span>{s!.title}</span>
+                  <span class="go">→</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {relacionadas.length > 0 && (
+        <section class="rel-perg">
+          <h2>Perguntas relacionadas</h2>
+          <ul>
+            {relacionadas.map((p) => (
+              <li><a href={`/perguntas/${p!.data.customSlug}`}>{p!.data.pergunta}</a></li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
+  </article>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .perg { padding-block: clamp(2.2rem, 6vw, 4rem); }
+  .perg-wrap { max-width: 780px; }
+  .crumbs { font-size: 0.8rem; color: var(--muted); display: flex; gap: 0.45rem; align-items: center; margin-bottom: 1.2rem; flex-wrap: wrap; }
+  .crumbs a { color: var(--muted); } .crumbs a:hover { color: var(--navy); } .crumbs b { color: var(--navy); font-weight: 500; }
+  .perg h1 { font-size: var(--step-2); color: var(--navy); line-height: 1.2; }
+  .rtime { color: var(--muted); font-size: 0.8rem; margin-top: 0.6rem; }
+
+  .resposta-direta {
+    margin: 1.6rem 0 2rem; padding: 1.4rem 1.6rem;
+    background: var(--mist); border: 1px solid var(--line); border-left: 4px solid var(--red);
+    border-radius: var(--radius);
+  }
+  .rd-label { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red); }
+  .resposta-direta p { margin: 0.5rem 0 0; font-size: 1.12rem; line-height: 1.6; color: var(--ink); font-weight: 500; }
+
+  .prose :global(h2) { font-size: var(--step-1); color: var(--navy); margin: 1.8rem 0 0.7rem; }
+  .prose :global(p) { margin-bottom: 1.1rem; color: #2c3650; line-height: 1.7; }
+  .prose :global(ul) { margin: 0 0 1.2rem 1.2rem; list-style: disc; display: flex; flex-direction: column; gap: 0.5rem; color: #2c3650; }
+  .prose :global(strong) { color: var(--navy); }
+
+  .fourlink-promessa {
+    margin: 2.2rem 0; padding: 1.6rem 1.8rem;
+    background: var(--grad-soft); color: #fff; border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+  .fourlink-promessa strong { display: block; font-family: var(--font-display); font-size: 1.15rem; margin-bottom: 0.5rem; }
+  .fourlink-promessa p { color: #d3dcef; line-height: 1.6; margin-bottom: 1.1rem; }
+
+  .rel-svc, .rel-perg { margin-top: 2rem; }
+  .rel-svc h2, .rel-perg h2 { font-size: 1.1rem; color: var(--navy); margin-bottom: 0.9rem; }
+  .rel-svc ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.7rem; }
+  .rel-svc a { display: flex; align-items: center; gap: 0.6rem; padding: 0.85rem 1rem; background: #fff; border: 1px solid var(--line); border-radius: 12px; color: var(--navy); font-weight: 500; }
+  .rel-svc a:hover { border-color: var(--red); }
+  .rel-svc .ic { color: var(--red); } .rel-svc .go { margin-left: auto; color: var(--red); }
+  .rel-perg ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .rel-perg a { color: var(--navy); text-decoration: none; border-bottom: 1px dashed var(--line); padding-bottom: 0.4rem; display: inline-block; }
+  .rel-perg a:hover { color: var(--red); }
+</style>

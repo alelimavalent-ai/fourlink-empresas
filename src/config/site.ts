@@ -122,6 +122,7 @@ export const NAV = [
   },
   { label: 'Calculadora', href: '/calculadora-de-economia' },
   { label: 'Soluções', href: '/solucoes' },
+  { label: 'Perguntas', href: '/perguntas' },
   { label: 'Central do Gestor', href: '/central-do-gestor' },
   { label: 'Contato', href: '/contato' },
 ] as const;

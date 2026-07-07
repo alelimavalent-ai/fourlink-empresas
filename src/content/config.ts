@@ -85,4 +85,21 @@ const segmentos = defineCollection({
   }),
 });
 
-export const collections = { servicos, cidades, artigos, faqs, segmentos };
+/** Perguntas com URL própria — cada pergunta é uma página que responde direto
+ *  (formato ideal para IAs citarem: resposta direta + schema QAPage). SÓ ACRESCENTA. */
+const perguntas = defineCollection({
+  type: 'content',
+  schema: z.object({
+    pergunta: z.string(),
+    customSlug: z.string(),
+    respostaCurta: z.string(),
+    categoria: z.string().default('Geral'),
+    seoTitle: z.string().optional(),
+    servicosRelacionados: z.array(z.string()).default([]),
+    perguntasRelacionadas: z.array(z.string()).default([]),
+    readingMinutes: z.number().default(2),
+    order: z.number().default(0),
+  }),
+});
+
+export const collections = { servicos, cidades, artigos, faqs, segmentos, perguntas };

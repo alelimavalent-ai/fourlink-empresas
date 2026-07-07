@@ -23,6 +23,7 @@ export const GET: APIRoute = async () => {
     '/sobre',
     '/servicos',
     '/solucoes',
+    '/perguntas',
     '/calculadora-de-economia',
     '/faq',
     '/contato',
@@ -39,8 +40,9 @@ export const GET: APIRoute = async () => {
   const segmentos = await safe('segmentos', (e) => `/solucoes/${e.data.slug}`);
   const cidades = await safe('cidades', (e) => `/atendimento/${e.data.uf}/${e.data.customSlug}`);
   const artigos = await safe('artigos', (e) => `/central-do-gestor/${e.data.category}/${e.slug}`);
+  const perguntas = await safe('perguntas', (e) => `/perguntas/${e.data.customSlug}`);
 
-  const todas = [...estaticas, ...ufs, ...categorias, ...servicos, ...segmentos, ...cidades, ...artigos];
+  const todas = [...estaticas, ...ufs, ...categorias, ...servicos, ...segmentos, ...cidades, ...artigos, ...perguntas];
   const unicas = Array.from(new Set(todas));
 
   const corpo = unicas

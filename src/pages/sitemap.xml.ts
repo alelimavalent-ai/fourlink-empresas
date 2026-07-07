@@ -27,6 +27,7 @@ export const GET: APIRoute = async () => {
     '/calculadora-de-economia',
     '/faq',
     '/contato',
+    '/trabalhe-conosco',
     '/central-do-gestor',
     '/atendimento',
   ];

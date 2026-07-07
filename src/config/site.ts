@@ -118,6 +118,11 @@ export const NAV = [
       { label: 'Gestão de Linhas', href: '/servicos/gestao-de-linhas' },
       { label: 'Consultoria em Telefonia', href: '/servicos/consultoria-telefonia' },
       { label: 'Redução de Custos', href: '/servicos/reducao-de-custos' },
+      { label: 'Telefonia Empresarial', href: '/servicos/telefonia-empresarial' },
+      { label: 'Internet Dedicada', href: '/servicos/internet-dedicada' },
+      { label: 'Link Corporativo', href: '/servicos/link-corporativo' },
+      { label: 'Backup de Internet', href: '/servicos/backup-de-internet' },
+      { label: 'Wi-Fi Empresarial', href: '/servicos/wifi-empresarial' },
     ],
   },
   { label: 'Calculadora', href: '/calculadora-de-economia' },
@@ -126,6 +131,17 @@ export const NAV = [
   { label: 'Central do Gestor', href: '/central-do-gestor' },
   { label: 'Contato', href: '/contato' },
 ] as const;
+
+/** Contato de RH (Trabalhe Conosco) — Alessandra RH. */
+export const RH = {
+  name: 'Alessandra RH',
+  whatsappDigits: '5521987681233',
+  whatsappDisplay: '(21) 98768-1233',
+  message:
+    'Olá Alessandra! Encontrei a vaga no site da Fourlink Empresas e gostaria de ' +
+    'deixar meu currículo e contato para o processo seletivo.',
+  slaText: 'Deixe seu currículo e contato — respondemos em até 24 horas.',
+} as const;
 
 /** Catálogo de serviços — também alimenta o schema.org e a home. */
 export const SERVICES = [
@@ -164,6 +180,36 @@ export const SERVICES = [
     title: 'Redução de Custos em Telefonia',
     short: 'Auditoria da fatura para eliminar o que sua empresa paga e não usa.',
     icon: 'savings',
+  },
+  {
+    slug: 'telefonia-empresarial',
+    title: 'Telefonia Empresarial',
+    short: 'Voz corporativa com ligações ilimitadas e gestão centralizada das linhas.',
+    icon: 'consult',
+  },
+  {
+    slug: 'internet-dedicada',
+    title: 'Internet Dedicada',
+    short: 'Link exclusivo com banda garantida para operações que não podem parar.',
+    icon: 'fiber',
+  },
+  {
+    slug: 'link-corporativo',
+    title: 'Link Corporativo',
+    short: 'Conexão corporativa de alta disponibilidade para matriz e filiais.',
+    icon: 'fiber',
+  },
+  {
+    slug: 'backup-de-internet',
+    title: 'Backup de Internet',
+    short: 'Conexão de reserva que assume automaticamente se a principal cair.',
+    icon: 'manage',
+  },
+  {
+    slug: 'wifi-empresarial',
+    title: 'Wi-Fi Empresarial',
+    short: 'Rede sem fio estável para operação e visitantes, com redes separadas.',
+    icon: 'fiber',
   },
 ] as const;
 

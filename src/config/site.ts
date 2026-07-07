@@ -129,6 +129,7 @@ export const NAV = [
   { label: 'Soluções', href: '/solucoes' },
   { label: 'Perguntas', href: '/perguntas' },
   { label: 'Central do Gestor', href: '/central-do-gestor' },
+  { label: 'Cases', href: '/cases-de-sucesso' },
   { label: 'Contato', href: '/contato' },
 ] as const;
 
@@ -296,6 +297,39 @@ export const CONTENT_RULES = {
   economyPhrase: ECONOMY_SHORT,
   positioning: 'especialista em telefonia corporativa e internet empresarial',
 } as const;
+
+/**
+ * Cases de Sucesso / Prova Social — empresas reais atendidas pela Fourlink.
+ * Fonte única. Para acrescentar um novo case, basta adicionar um objeto aqui.
+ * O depoimento só aparece no site quando o campo `depoimento` estiver preenchido.
+ */
+export const CASES = [
+  {
+    slug: 'comprec',
+    empresa: 'Comprec',
+    instagram: 'https://www.instagram.com/comprecativos?igsh=MWNrdmQ5eGZ3YTM0Zg==',
+    instagramHandle: '@comprecativos',
+    vendedora: 'Gabriele',
+    vendedoraTag: 'Destaque do mês · Vendas B2B',
+    tema: 'Redução de custos em telefonia corporativa',
+    resumo:
+      'A Comprec, empresa cliente da Fourlink Empresas, buscava reduzir os custos com as linhas ' +
+      'corporativas da equipe. O atendimento foi conduzido pela vendedora Gabriele, com análise do ' +
+      'perfil de consumo e migração para planos empresariais sob medida.',
+    resultado:
+      'Redução dos custos de telefonia corporativa, com ' + ECONOMY_SHORT + '.',
+    // ↓↓↓ COLE AQUI O DEPOIMENTO REAL DA COMPREC (aparece no site só quando preenchido) ↓↓↓
+    depoimento: '',
+    depoimentoAutor: '',
+    // ↑↑↑
+    fotoEquipe: 'comprec-equipe',
+    fotoEquipeAlt: 'Equipe da Comprec comemorando os resultados no escritório',
+    arteVendedora: 'gabriele-destaque',
+    video: 'comprec-bastidores',
+  },
+] as const;
+
+export type CaseItem = (typeof CASES)[number];
 
 export type NavItem = (typeof NAV)[number];
 export type Service = (typeof SERVICES)[number];

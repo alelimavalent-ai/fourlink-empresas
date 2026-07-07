@@ -29,6 +29,7 @@ export const GET: APIRoute = async () => {
     '/contato',
     '/trabalhe-conosco',
     '/central-do-gestor',
+    '/cases-de-sucesso',
     '/atendimento',
   ];
 
